@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YogaBinds — Choose Your Programme</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ========== USER BAR ========== -->
+  <div class="user-bar">
+    <div class="container">
+      <span>Welcome back, <strong id="userName">Yogi</strong> 🧘</span>
+      <a href="#" onclick="handleLogout(); return false;">Log Out</a>
+    </div>
+  </div>
+
+  <!-- ========== NAVIGATION ========== -->
+  <nav class="navbar" style="top: 44px;">
+    <div class="container">
+      <a href="landing.html" class="navbar-brand">Yoga<span>Binds</span></a>
+      <ul class="navbar-links" id="navLinks">
+        <li><a href="landing.html">Programmes</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="#" onclick="handleLogout(); return false;">Log Out</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" onclick="toggleNav()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ========== PROGRAMMES HERO ========== -->
+  <section class="programmes-hero" style="padding-top: 180px;">
+    <div class="container">
+      <span class="section-label">Your Practice Awaits</span>
+      <h1>Choose your <em>programme.</em></h1>
+      <p>Select the plan that feels right for you. Every journey starts with a single class.</p>
+    </div>
+  </section>
+
+  <!-- ========== PROGRAMMES GRID ========== -->
+  <section class="programmes-grid-section">
+    <div class="container">
+      <div class="programmes-grid">
+
+        <!-- INTRODUCTORY OFFER -->
+        <div class="programme-card">
+          <div class="badge">Best Value</div>
+          <div class="programme-card-label">01 · Introductory Offer</div>
+          <h3>Introductory Offer!</h3>
+          <div class="price">$29 <span style="font-size: 1rem; font-weight: 400; color: var(--text-muted);">AUD</span></div>
+          <div class="price-sub">For your first three classes</div>
+          <p>
+            New to YogaBinds? Start your journey with our introductory package.
+            Experience three full classes at a special rate — explore styles, meet our
+            instructors, and find your flow.
+          </p>
+          <a href="#" class="btn btn-primary" onclick="alert('Thank you! Your introductory package has been selected. We will contact you shortly to confirm your booking.'); return false;">
+            Purchase Intro Offer ↗
+          </a>
+        </div>
+
+        <!-- PER CLASS -->
+        <div class="programme-card">
+          <div class="programme-card-label">02 · Casual Class</div>
+          <h3>Per Class</h3>
+          <div class="price">$15 <span style="font-size: 1rem; font-weight: 400; color: var(--text-muted);">AUD</span></div>
+          <div class="price-sub">For each individual class</div>
+          <p>
+            Prefer flexibility? Drop in to any of our scheduled classes at your convenience.
+            No commitment, no lock-in. Just you, your mat, and the practice.
+          </p>
+          <a href="#" class="btn btn-outline" onclick="alert('Thank you! Your casual class has been selected. We will contact you shortly to confirm your booking.'); return false;">
+            Book a Class ↗
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">YogaBinds</div>
+          <p class="footer-desc">
+            An Australian yoga studio rooted in ancient tradition.
+            Breath-led. Community-driven. Purpose-built.
+          </p>
+        </div>
+        <div class="footer-column">
+          <h4>Navigate</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="landing.html">Programmes</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Account</h4>
+          <ul>
+            <li><a href="#" onclick="handleLogout(); return false;">Log Out</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="refund-policy.html">Refund Policy</a></li>
+            <li><a href="privacy-policy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Usage</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024–2026 YogaBinds. All rights reserved. Made with 🧘 in Australia.</p>
+        <div class="footer-bottom-links">
+          <a href="privacy-policy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <a href="refund-policy.html">Refunds</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="auth.js"></script>
+  <script>
+    // Display user name from localStorage
+    document.addEventListener('DOMContentLoaded', function () {
+      const user = JSON.parse(localStorage.getItem('yogabinds_user') || '{}');
+      if (!user.email) {
+        window.location.href = 'index.html';
+        return;
+      }
+      const el = document.getElementById('userName');
+      if (el && user.name) {
+        el.textContent = user.name;
+      }
+    });
+  </script>
+</body>
+</html>

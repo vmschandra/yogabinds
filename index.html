@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YogaBinds — Find Your Balance</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ========== NAVIGATION ========== -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">Yoga<span>Binds</span></a>
+      <ul class="navbar-links" id="navLinks">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#philosophy">Philosophy</a></li>
+        <li><a href="#origin">Origins</a></li>
+        <li><a href="#" onclick="openModal('login'); return false;">Log In</a></li>
+        <li><a href="#" class="btn btn-primary btn-small" onclick="openModal('signup'); return false;">Create Account</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" onclick="toggleNav()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero" id="home">
+    <div class="container">
+      <div class="hero-content">
+        <span class="hero-label">Australia's Mindful Yoga Studio</span>
+        <h1>Find your <em>balance</em>, bind your <em>breath.</em></h1>
+        <p class="hero-subtitle">
+          YogaBinds is a journey into stillness, strength, and self-discovery.
+          We bring the ancient wisdom of yoga to modern Australia — one breath at a time.
+        </p>
+        <div class="hero-actions">
+          <a href="#" class="btn btn-primary btn-large" onclick="openModal('signup'); return false;">Create Your Account</a>
+          <a href="#about" class="btn btn-outline btn-large">Learn More</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <span class="hero-stat-number">5,000+</span>
+            <span class="hero-stat-label">Students</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-number">12</span>
+            <span class="hero-stat-label">Years Teaching</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-number">∞</span>
+            <span class="hero-stat-label">Dedication</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ABOUT ========== -->
+  <section class="about" id="about">
+    <div class="container">
+      <span class="section-label">Our Story</span>
+      <div class="about-grid">
+        <div class="about-text">
+          <div class="section-header">
+            <h2>Born from a love of stillness.</h2>
+          </div>
+          <p>
+            YogaBinds was founded with a simple belief: that yoga is not a workout — it is a way of life.
+            Based in Australia, our studio brings together the ancient traditions of Indian yoga with
+            the warmth and openness of Australian culture.
+          </p>
+          <p>
+            We are not a franchise. We are not a fitness chain. We are a community of practitioners who
+            believe that true well-being comes from connecting the body, mind, and breath. Every class
+            at YogaBinds is designed to honour this connection.
+          </p>
+          <p>
+            Whether you are a complete beginner or a seasoned practitioner, our doors — and our hearts — are
+            open to you. We teach traditional Hatha, Vinyasa, and restorative yoga with authenticity,
+            patience, and care.
+          </p>
+          <blockquote class="about-quote">
+            "Yoga is not about touching your toes. It is about what you learn on the way down."
+          </blockquote>
+        </div>
+        <div class="about-image">
+          🧘
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PHILOSOPHY ========== -->
+  <section class="philosophy" id="philosophy">
+    <div class="container">
+      <span class="section-label">How We Practice</span>
+      <div class="section-header">
+        <h2>Our Philosophy.</h2>
+      </div>
+      <div class="philosophy-grid">
+        <div class="philosophy-card">
+          <div class="philosophy-card-number">One.</div>
+          <h3>Breath Before Movement</h3>
+          <p>
+            Every class begins and ends with the breath. Pranayama — the art of breath control — is the
+            foundation of everything we teach. We believe that when you master your breath, you master your mind.
+          </p>
+        </div>
+        <div class="philosophy-card">
+          <div class="philosophy-card-number">Two.</div>
+          <h3>Honour the Tradition</h3>
+          <p>
+            Yoga has been practised for over 5,000 years. We respect its origins in the Indus Valley
+            and the teachings of the ancient sages. Our classes are rooted in traditional methods, not trends.
+          </p>
+        </div>
+        <div class="philosophy-card">
+          <div class="philosophy-card-number">Three.</div>
+          <h3>Community Over Competition</h3>
+          <p>
+            There are no leaderboards here. No "advanced" labels. YogaBinds is a space where everyone
+            practises at their own pace, supported by a community that lifts each other up.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ORIGIN OF YOGA ========== -->
+  <section class="origin" id="origin">
+    <div class="container">
+      <span class="section-label">Ancient Roots</span>
+      <div class="section-header">
+        <h2>The Origin Story of Yoga.</h2>
+      </div>
+      <div class="origin-content">
+        <p>
+          The word <strong>"yoga"</strong> comes from the Sanskrit root <strong>"yuj"</strong>, meaning to
+          yoke or unite. It represents the union of individual consciousness with universal consciousness —
+          a harmony of body, mind, and spirit.
+        </p>
+        <p>
+          Yoga's origins trace back over 5,000 years to the Indus-Sarasvati civilisation in Northern India.
+          The earliest mentions appear in the Rig Veda, one of the oldest sacred texts known to humankind.
+          It was refined and developed by Brahmans and Rishis who documented their practices and beliefs in
+          the Upanishads — a collection of over 200 scriptures.
+        </p>
+        <p>
+          The most renowned of yoga scriptures, the Bhagavad Gita, composed around 500 BCE, introduced
+          the concept of selfless action (Karma Yoga), devotion (Bhakti Yoga), and knowledge (Jnana Yoga).
+          Later, the sage Patanjali organised the practice into the "Yoga Sutras," outlining the eight
+          limbs of yoga — a systematic path toward spiritual enlightenment.
+        </p>
+        <p>
+          From the forests of ancient India to studios across the world, yoga has endured because its
+          truth is timeless: that peace begins within.
+        </p>
+
+        <div class="origin-timeline">
+          <div class="timeline-item">
+            <div class="timeline-marker"></div>
+            <div class="timeline-text">
+              <h3>~3000 BCE — Indus Valley</h3>
+              <p>Archaeological evidence of yoga postures found in ancient seals and artefacts.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-marker"></div>
+            <div class="timeline-text">
+              <h3>~1500 BCE — The Vedas</h3>
+              <p>Yoga concepts first appear in the Rig Veda, the oldest of the four Vedas.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-marker"></div>
+            <div class="timeline-text">
+              <h3>~500 BCE — Bhagavad Gita</h3>
+              <p>The Gita synthesises the paths of Karma, Bhakti, and Jnana Yoga.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-marker"></div>
+            <div class="timeline-text">
+              <h3>~200 BCE — Patanjali's Yoga Sutras</h3>
+              <p>The eight limbs of yoga are codified into a systematic practice.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-marker"></div>
+            <div class="timeline-text">
+              <h3>Today — Global Practice</h3>
+              <p>Yoga is practised by over 300 million people worldwide, uniting cultures and communities.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CTA SECTION ========== -->
+  <section class="cta-section">
+    <div class="container">
+      <h2>Begin your journey today.</h2>
+      <p>Create your free account and explore our programmes. Your first step toward balance starts here.</p>
+      <a href="#" class="btn btn-primary btn-large" onclick="openModal('signup'); return false;">Create Your Account ↗</a>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">YogaBinds</div>
+          <p class="footer-desc">
+            An Australian yoga studio rooted in ancient tradition.
+            Breath-led. Community-driven. Purpose-built.
+          </p>
+        </div>
+        <div class="footer-column">
+          <h4>Navigate</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#philosophy">Philosophy</a></li>
+            <li><a href="#origin">Origins</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Account</h4>
+          <ul>
+            <li><a href="#" onclick="openModal('login'); return false;">Log In</a></li>
+            <li><a href="#" onclick="openModal('signup'); return false;">Create Account</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="refund-policy.html">Refund Policy</a></li>
+            <li><a href="privacy-policy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Usage</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024–2026 YogaBinds. All rights reserved. Made with 🧘 in Australia.</p>
+        <div class="footer-bottom-links">
+          <a href="privacy-policy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <a href="refund-policy.html">Refunds</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========== LOGIN MODAL ========== -->
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModals()">&times;</button>
+      <h2>Welcome back.</h2>
+      <p>Log in to access your programmes.</p>
+      <div class="success-message" id="loginSuccess">Login successful! Redirecting…</div>
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" placeholder="you@example.com" required />
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" placeholder="Your password" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Log In</button>
+      </form>
+      <div class="modal-switch">
+        Don't have an account? <a href="#" onclick="switchModal('signup'); return false;">Create one</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SIGNUP MODAL ========== -->
+  <div class="modal-overlay" id="signupModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModals()">&times;</button>
+      <h2>Create your account.</h2>
+      <p>Join the YogaBinds community today.</p>
+      <div class="success-message" id="signupSuccess">Account created! Redirecting…</div>
+      <form onsubmit="handleSignup(event)">
+        <div class="form-group">
+          <label for="signupName">Full Name</label>
+          <input type="text" id="signupName" placeholder="Your full name" required />
+        </div>
+        <div class="form-group">
+          <label for="signupEmail">Email</label>
+          <input type="email" id="signupEmail" placeholder="you@example.com" required />
+        </div>
+        <div class="form-group">
+          <label for="signupPassword">Password</label>
+          <input type="password" id="signupPassword" placeholder="Create a password" required minlength="6" />
+        </div>
+        <button type="submit" class="btn btn-primary">Create Account</button>
+      </form>
+      <div class="modal-switch">
+        Already have an account? <a href="#" onclick="switchModal('login'); return false;">Log in</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+</body>
+</html>

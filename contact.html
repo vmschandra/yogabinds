@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us — YogaBinds</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ========== NAVIGATION ========== -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">Yoga<span>Binds</span></a>
+      <ul class="navbar-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#philosophy">Philosophy</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" onclick="toggleNav()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ========== CONTACT ========== -->
+  <section class="policy-page">
+    <div class="container">
+      <span class="section-label">Get In Touch</span>
+      <div class="section-header">
+        <h1>Contact Us.</h1>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-info">
+          <div class="contact-info-item">
+            <div class="label">Email</div>
+            <p><a href="mailto:hello@yogabinds.com">hello@yogabinds.com</a></p>
+          </div>
+          <div class="contact-info-item">
+            <div class="label">Phone</div>
+            <p>+61 4XX XXX XXX</p>
+          </div>
+          <div class="contact-info-item">
+            <div class="label">Location</div>
+            <p>Australia</p>
+          </div>
+          <div class="contact-info-item">
+            <div class="label">Hours</div>
+            <p>Monday – Saturday: 6:00 AM – 8:00 PM AEST<br />Sunday: 7:00 AM – 12:00 PM AEST</p>
+          </div>
+        </div>
+        <div class="contact-form">
+          <div class="success-message" id="contactSuccess">Thank you! Your message has been sent. We'll get back to you soon.</div>
+          <form onsubmit="handleContact(event)">
+            <div class="form-group">
+              <label for="contactName">Your Name</label>
+              <input type="text" id="contactName" placeholder="Full name" required />
+            </div>
+            <div class="form-group">
+              <label for="contactEmail">Email Address</label>
+              <input type="email" id="contactEmail" placeholder="you@example.com" required />
+            </div>
+            <div class="form-group">
+              <label for="contactMessage">Message</label>
+              <textarea id="contactMessage" placeholder="How can we help you?" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>© 2024–2026 YogaBinds. All rights reserved. Made with 🧘 in Australia.</p>
+        <div class="footer-bottom-links">
+          <a href="privacy-policy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <a href="refund-policy.html">Refunds</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="auth.js"></script>
+  <script>
+    function handleContact(e) {
+      e.preventDefault();
+      document.getElementById('contactSuccess').classList.add('show');
+      e.target.reset();
+      setTimeout(function () {
+        document.getElementById('contactSuccess').classList.remove('show');
+      }, 5000);
+    }
+  </script>
+</body>
+</html>
