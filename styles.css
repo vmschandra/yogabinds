@@ -529,11 +529,11 @@ section {
 }
 
 .timeline-marker {
-  width: 12px;
-  height: 12px;
+  width: 7px;
+  height: 7px;
   background: var(--green-mid);
   border-radius: 50%;
-  margin-top: 6px;
+  margin-top: 8px;
   flex-shrink: 0;
 }
 
