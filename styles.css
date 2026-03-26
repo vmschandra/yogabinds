@@ -482,9 +482,9 @@ section {
   bottom: 0;
   background-image: url('gallery/11.JPG');
   background-size: contain;
-  background-position: center center;
+  background-position: center 30%;
   background-repeat: no-repeat;
-  opacity: 0.20;
+  opacity: 0.12;
   pointer-events: none;
   z-index: 0;
 }
