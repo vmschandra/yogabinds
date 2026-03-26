@@ -519,7 +519,7 @@ section {
   margin-top: 40px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
 }
 
 .timeline-item {
