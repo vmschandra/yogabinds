@@ -512,10 +512,10 @@ section {
 }
 
 .origin-timeline {
-  margin-top: 60px;
+  margin-top: 40px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 16px;
 }
 
 .timeline-item {
