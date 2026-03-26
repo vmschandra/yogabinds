@@ -494,6 +494,10 @@ section {
   z-index: 1;
 }
 
+.origin .section-header {
+  margin-bottom: 24px;
+}
+
 .origin-content {
   max-width: 1200px;
 }
