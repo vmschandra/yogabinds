@@ -252,6 +252,21 @@ section {
   overflow: hidden;
 }
 
+.hero-bg-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('gallery/10.JPG');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 0;
+}
+
 .hero::before {
   content: '';
   position: absolute;
