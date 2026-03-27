@@ -468,7 +468,6 @@ section {
 
 .hero h1 {
   margin-bottom: 28px;
-  font-size: clamp(2.6rem, 6vw, 4.5rem);
 }
 
 .hero h1 em {
