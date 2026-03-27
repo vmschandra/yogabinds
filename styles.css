@@ -594,6 +594,217 @@ section {
   font-size: 0.95rem;
 }
 
+/* --- Pricing Section --- */
+.pricing-section {
+  background: var(--green-bg-soft);
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 48px;
+  margin-top: 60px;
+}
+
+.pricing-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  padding: 48px 40px;
+  position: relative;
+  transition: box-shadow 0.3s ease;
+}
+
+.pricing-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.pricing-badge {
+  position: absolute;
+  top: 0;
+  right: 32px;
+  background: var(--green-dark);
+  color: var(--white);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 8px 16px;
+}
+
+.pricing-card h3 {
+  font-size: 1.4rem;
+  margin-bottom: 16px;
+}
+
+.pricing-amount {
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.pricing-amount span {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.pricing-detail {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.pricing-card > p {
+  font-size: 0.95rem;
+  margin-bottom: 24px;
+}
+
+.pricing-features {
+  list-style: none;
+  margin-bottom: 32px;
+}
+
+.pricing-features li {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  padding-left: 20px;
+  position: relative;
+}
+
+.pricing-features li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--green-mid);
+  font-weight: 700;
+}
+
+.pricing-card .btn {
+  width: 100%;
+  text-align: center;
+}
+
+/* --- Payment Page --- */
+.payment-page {
+  padding-top: 140px;
+  background: var(--off-white);
+}
+
+.payment-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 60px;
+  align-items: start;
+}
+
+.payment-summary {
+  background: var(--green-bg-soft);
+  border: 1px solid var(--border);
+  padding: 40px;
+  position: sticky;
+  top: 100px;
+}
+
+.payment-summary h2 {
+  margin-bottom: 8px;
+  font-size: 1.8rem;
+}
+
+.payment-price {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.payment-price span {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.payment-summary > p {
+  font-size: 0.95rem;
+  margin-bottom: 32px;
+}
+
+.payment-summary-details {
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  padding: 8px 0;
+}
+
+.summary-total {
+  border-top: 1px solid var(--border);
+  margin-top: 8px;
+  padding-top: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.payment-form-container {
+  background: var(--white);
+  border: 1px solid var(--border);
+  padding: 48px;
+}
+
+.payment-form-container h2 {
+  margin-bottom: 8px;
+  font-size: 1.8rem;
+}
+
+.payment-form-container > p {
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+
+.form-section-title {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: 32px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.form-section-title:first-of-type {
+  margin-top: 0;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.payment-submit {
+  width: 100%;
+  margin-top: 32px;
+  text-align: center;
+}
+
+.payment-disclaimer {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 16px;
+}
+
 /* --- CTA Section --- */
 .cta-section {
   background: linear-gradient(170deg, var(--green-darkest), var(--green-dark));
@@ -620,6 +831,38 @@ section {
 
 .cta-section .btn-primary:hover {
   background: var(--green-lightest);
+}
+
+/* --- Feedback Section --- */
+.feedback-section {
+  background: var(--white);
+  border-top: 1px solid var(--border);
+}
+
+.feedback-intro {
+  max-width: 600px;
+  margin-bottom: 40px;
+  font-size: 1.05rem;
+}
+
+.feedback-form {
+  max-width: 700px;
+}
+
+.feedback-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.feedback-form textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.feedback-section .success-message {
+  margin-top: 20px;
+  max-width: 700px;
 }
 
 /* --- Footer --- */
@@ -1071,6 +1314,15 @@ section {
     grid-template-columns: 1fr 1fr;
     gap: 40px;
   }
+
+  .pricing-grid {
+    gap: 32px;
+  }
+
+  .payment-wrapper {
+    grid-template-columns: 1fr 1.4fr;
+    gap: 40px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -1132,11 +1384,72 @@ section {
     margin: 16px;
     padding: 36px 28px;
   }
+
+  /* Pricing — single column on tablets */
+  .pricing-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-top: 40px;
+  }
+
+  .pricing-card {
+    padding: 36px 28px;
+  }
+
+  .pricing-amount {
+    font-size: 2.4rem;
+  }
+
+  /* Payment page — stack vertically */
+  .payment-page {
+    padding-top: 100px;
+  }
+
+  .payment-wrapper {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .payment-summary {
+    position: static;
+    padding: 28px 24px;
+  }
+
+  .payment-form-container {
+    padding: 28px 24px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  /* Feedback — single column inputs */
+  .feedback-row {
+    grid-template-columns: 1fr;
+  }
+
+  .feedback-form {
+    max-width: 100%;
+  }
+
+  /* CTA section */
+  .cta-section h2 {
+    font-size: 1.8rem;
+  }
+
+  .cta-section p {
+    font-size: 0.95rem;
+  }
 }
 
 @media (max-width: 480px) {
   h1 {
     font-size: 2.4rem;
+  }
+
+  h2 {
+    font-size: 1.6rem;
   }
 
   .hero-actions {
@@ -1147,5 +1460,78 @@ section {
   .hero-stats {
     flex-direction: column;
     gap: 24px;
+  }
+
+  /* Pricing — tighter on small screens */
+  .pricing-card {
+    padding: 28px 20px;
+  }
+
+  .pricing-amount {
+    font-size: 2rem;
+  }
+
+  .pricing-badge {
+    right: 16px;
+    font-size: 0.65rem;
+    padding: 6px 12px;
+  }
+
+  /* Payment — compact */
+  .payment-page {
+    padding-top: 88px;
+  }
+
+  .payment-summary {
+    padding: 24px 20px;
+  }
+
+  .payment-summary h2 {
+    font-size: 1.4rem;
+  }
+
+  .payment-form-container {
+    padding: 24px 20px;
+  }
+
+  .payment-submit {
+    padding: 14px 24px;
+  }
+
+  /* Buttons */
+  .btn-large {
+    padding: 14px 28px;
+    font-size: 0.82rem;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: auto;
+    padding-top: 100px;
+    padding-bottom: 60px;
+  }
+
+  .hero-content {
+    padding: 0 8px;
+  }
+
+  /* Section labels */
+  .section-label {
+    font-size: 0.7rem;
+  }
+
+  /* Footer */
+  .footer {
+    padding: 48px 0 24px;
+  }
+
+  /* Feedback */
+  .feedback-intro {
+    font-size: 0.95rem;
+  }
+
+  /* Contact form */
+  .contact-grid {
+    gap: 32px;
   }
 }

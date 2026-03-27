@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book Your Class | YogaBinds</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ========== NAVIGATION ========== -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">Yoga<span>Binds</span></a>
+      <ul class="navbar-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#pricing">Pricing</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" onclick="toggleNav()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ========== PAYMENT SECTION ========== -->
+  <section class="payment-page">
+    <div class="container">
+      <div class="payment-wrapper">
+
+        <!-- ORDER SUMMARY -->
+        <div class="payment-summary">
+          <span class="section-label">Your Selection</span>
+          <h2 id="planTitle">Introductory Offer</h2>
+          <div class="payment-price" id="planPrice">$29.99 <span>AUD</span></div>
+          <p id="planDesc">Three full yoga classes at a special introductory rate.</p>
+          <div class="payment-summary-details">
+            <div class="summary-row">
+              <span>Plan</span>
+              <span id="summaryPlan">Introductory Offer</span>
+            </div>
+            <div class="summary-row">
+              <span>Classes</span>
+              <span id="summaryClasses">3</span>
+            </div>
+            <div class="summary-row summary-total">
+              <span>Total</span>
+              <span id="summaryTotal">$29.99 AUD</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOOKING FORM -->
+        <div class="payment-form-container">
+          <h2>Complete Your Booking</h2>
+          <p>Fill in your details below to reserve your spot.</p>
+
+          <div class="success-message" id="paymentSuccess">
+            Thank you! Your booking has been confirmed. I'll be in touch with class details shortly.
+          </div>
+
+          <form onsubmit="handlePayment(event)" id="paymentForm">
+
+            <!-- Personal Details -->
+            <div class="form-section-title">Personal Details</div>
+
+            <div class="form-group">
+              <label for="fullName">Full Name</label>
+              <input type="text" id="fullName" placeholder="Your full name" required />
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input type="email" id="email" placeholder="you@example.com" required />
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Phone Number</label>
+              <input type="tel" id="phone" placeholder="+61 4XX XXX XXX" required />
+            </div>
+
+            <!-- Address -->
+            <div class="form-section-title">Address</div>
+
+            <div class="form-group">
+              <label for="address">Street Address</label>
+              <input type="text" id="address" placeholder="123 Main Street" required />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="city">City / Suburb</label>
+                <input type="text" id="city" placeholder="Sydney" required />
+              </div>
+              <div class="form-group">
+                <label for="state">State</label>
+                <select id="state" required>
+                  <option value="" disabled selected>Select</option>
+                  <option value="NSW">NSW</option>
+                  <option value="VIC">VIC</option>
+                  <option value="QLD">QLD</option>
+                  <option value="WA">WA</option>
+                  <option value="SA">SA</option>
+                  <option value="TAS">TAS</option>
+                  <option value="ACT">ACT</option>
+                  <option value="NT">NT</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="postcode">Postcode</label>
+                <input type="text" id="postcode" placeholder="2000" required maxlength="4" />
+              </div>
+            </div>
+
+            <!-- Student Type -->
+            <div class="form-section-title">Experience Level</div>
+
+            <div class="form-group">
+              <label for="studentType">Type of Student</label>
+              <select id="studentType" required>
+                <option value="" disabled selected>Select your level</option>
+                <option value="beginner">Beginner — New to yoga</option>
+                <option value="intermediate">Intermediate — Some experience</option>
+                <option value="pro">Advanced — Experienced practitioner</option>
+              </select>
+            </div>
+
+            <!-- Payment Details -->
+            <div class="form-section-title">Payment Details</div>
+
+            <div class="form-group">
+              <label for="cardName">Name on Card</label>
+              <input type="text" id="cardName" placeholder="Name as it appears on card" required />
+            </div>
+
+            <div class="form-group">
+              <label for="cardNumber">Card Number</label>
+              <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" required maxlength="19" />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="cardExpiry">Expiry Date</label>
+                <input type="text" id="cardExpiry" placeholder="MM / YY" required maxlength="7" />
+              </div>
+              <div class="form-group">
+                <label for="cardCvc">CVC</label>
+                <input type="text" id="cardCvc" placeholder="123" required maxlength="4" />
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-large payment-submit">
+              Confirm & Pay
+            </button>
+
+            <p class="payment-disclaimer">
+              Your payment is processed securely. By completing this booking, you agree to the
+              <a href="terms.html">Terms of Usage</a> and <a href="refund-policy.html">Refund Policy</a>.
+            </p>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">YogaBinds</div>
+          <p class="footer-desc">
+            A yoga studio rooted in ancient tradition.
+            Breath-led. Community-driven. Purpose-built.
+          </p>
+        </div>
+        <div class="footer-column">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="refund-policy.html">Refund Policy</a></li>
+            <li><a href="privacy-policy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Usage</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="auth.js"></script>
+  <script>
+    // ---- Read Plan from URL ----
+    document.addEventListener('DOMContentLoaded', function () {
+      var params = new URLSearchParams(window.location.search);
+      var plan = params.get('plan');
+
+      var titleEl = document.getElementById('planTitle');
+      var priceEl = document.getElementById('planPrice');
+      var descEl = document.getElementById('planDesc');
+      var summaryPlan = document.getElementById('summaryPlan');
+      var summaryClasses = document.getElementById('summaryClasses');
+      var summaryTotal = document.getElementById('summaryTotal');
+
+      if (plan === 'casual') {
+        titleEl.textContent = 'Casual Class';
+        priceEl.innerHTML = '$14.99 <span>AUD</span>';
+        descEl.textContent = 'One full yoga class. Drop in at your convenience.';
+        summaryPlan.textContent = 'Casual Class';
+        summaryClasses.textContent = '1';
+        summaryTotal.textContent = '$14.99 AUD';
+      }
+      // Default is intro plan (already set in HTML)
+    });
+
+    // ---- Card Number Formatting ----
+    document.getElementById('cardNumber').addEventListener('input', function (e) {
+      var value = e.target.value.replace(/\D/g, '');
+      var formatted = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+      e.target.value = formatted.substring(0, 19);
+    });
+
+    // ---- Expiry Date Formatting ----
+    document.getElementById('cardExpiry').addEventListener('input', function (e) {
+      var value = e.target.value.replace(/\D/g, '');
+      if (value.length >= 2) {
+        e.target.value = value.substring(0, 2) + ' / ' + value.substring(2, 4);
+      } else {
+        e.target.value = value;
+      }
+    });
+
+    // ---- Payment Handler ----
+    function handlePayment(e) {
+      e.preventDefault();
+
+      // Show success message
+      document.getElementById('paymentSuccess').classList.add('show');
+      document.getElementById('paymentForm').style.display = 'none';
+
+      // Scroll to top of form area
+      document.querySelector('.payment-form-container').scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
