@@ -327,6 +327,94 @@ section {
   animation: slideInFromLeft 0.8s ease-out 0.8s both;
 }
 
+.hero-content .hero-pricing-heading {
+  animation: slideInFromLeft 0.8s ease-out 0.95s both;
+}
+
+.hero-content .hero-pricing-grid {
+  animation: slideInFromLeft 0.8s ease-out 1.1s both;
+}
+
+/* --- Hero Pricing Cards --- */
+.hero-pricing-heading {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: 48px;
+  margin-bottom: 20px;
+  letter-spacing: -0.01em;
+}
+
+.hero-pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.hero-pricing-card {
+  display: block;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1.5px solid var(--border);
+  padding: 28px 24px;
+  text-align: center;
+  text-decoration: none;
+  color: var(--text-primary);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.hero-pricing-card:hover {
+  box-shadow: var(--shadow-lg);
+  border-color: var(--green-mid);
+  transform: translateY(-2px);
+}
+
+.hero-pricing-card .pricing-badge {
+  position: absolute;
+  top: 0;
+  right: 20px;
+  background: var(--green-dark);
+  color: var(--white);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 5px 12px;
+}
+
+.hero-pricing-card h4 {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.hero-pricing-card .pricing-amount {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.hero-pricing-card .pricing-amount span {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.hero-pricing-card .pricing-detail {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0;
+}
+
 .hero-announcement {
   display: block;
   font-family: var(--font-body);
@@ -1435,6 +1523,16 @@ section {
   .cta-section p {
     font-size: 0.95rem;
   }
+
+  /* Hero pricing cards */
+  .hero-pricing-grid {
+    grid-template-columns: 1fr;
+    max-width: 320px;
+  }
+
+  .hero-pricing-heading {
+    margin-top: 36px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1507,6 +1605,20 @@ section {
 
   .hero-content {
     padding: 0 8px;
+  }
+
+  /* Hero pricing cards on small screens */
+  .hero-pricing-heading {
+    font-size: 1.2rem;
+    margin-top: 32px;
+  }
+
+  .hero-pricing-card {
+    padding: 22px 18px;
+  }
+
+  .hero-pricing-card .pricing-amount {
+    font-size: 1.5rem;
   }
 
   /* Section labels */
