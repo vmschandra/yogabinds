@@ -412,7 +412,32 @@ section {
 .hero-pricing-card .pricing-detail {
   font-size: 0.8rem;
   color: var(--text-muted);
-  margin-bottom: 0;
+  margin-bottom: 12px;
+}
+
+.hero-pricing-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.hero-pricing-features li {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  padding: 4px 0;
+  padding-left: 16px;
+  position: relative;
+}
+
+.hero-pricing-features li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--green-mid);
+  font-weight: 700;
+  font-size: 0.72rem;
 }
 
 .hero-announcement {
