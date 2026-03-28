@@ -115,18 +115,7 @@
               </div>
             </div>
 
-            <!-- Student Type -->
-            <div class="form-section-title">Experience Level</div>
 
-            <div class="form-group">
-              <label for="studentType">Type of Student</label>
-              <select id="studentType" required>
-                <option value="" disabled selected>Select your level</option>
-                <option value="beginner">Beginner — New to yoga</option>
-                <option value="intermediate">Intermediate — Some experience</option>
-                <option value="pro">Advanced — Experienced practitioner</option>
-              </select>
-            </div>
 
             <!-- Payment Details -->
             <div class="form-section-title">Payment Details</div>
@@ -249,7 +238,6 @@
         city: document.getElementById('city').value,
         state: document.getElementById('state').value,
         postcode: document.getElementById('postcode').value,
-        studentType: document.getElementById('studentType').value,
         // Note: card details are NOT stored for security — only last 4 digits for reference
         cardLast4: document.getElementById('cardNumber').value.replace(/\s/g, '').slice(-4),
         amount: plan === 'casual' ? '$14.99 AUD' : '$29.99 AUD'
