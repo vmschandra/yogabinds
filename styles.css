@@ -737,6 +737,8 @@ section {
 
 .currency {
   font-family: var(--font-body);
+  font-size: inherit;
+  font-weight: inherit;
 }
 
 .pricing-amount span {
