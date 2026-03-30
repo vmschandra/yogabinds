@@ -11,7 +11,7 @@
 // ============================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
 
 // ---- YOUR FIREBASE CONFIG ----
@@ -75,5 +75,41 @@ export async function saveContact(name, email, message) {
   } catch (error) {
     console.error("Error saving contact:", error);
     return false;
+  }
+}
+
+// ---- Fetch Bookings ----
+export async function getBookings() {
+  try {
+    const q = query(collection(db, "bookings"), orderBy("createdAt", "desc"));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    console.error("Error fetching bookings:", error);
+    return [];
+  }
+}
+
+// ---- Fetch Feedback ----
+export async function getFeedback() {
+  try {
+    const q = query(collection(db, "feedback"), orderBy("createdAt", "desc"));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    console.error("Error fetching feedback:", error);
+    return [];
+  }
+}
+
+// ---- Fetch Contact Messages ----
+export async function getContacts() {
+  try {
+    const q = query(collection(db, "contacts"), orderBy("createdAt", "desc"));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    console.error("Error fetching contacts:", error);
+    return [];
   }
 }

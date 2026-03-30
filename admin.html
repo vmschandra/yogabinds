@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin | YogaBinds</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .admin-login {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--green-bg-soft);
+    }
+
+    .admin-login-box {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 48px 40px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .admin-login-box h2 {
+      font-family: var(--font-heading);
+      margin-bottom: 8px;
+    }
+
+    .admin-login-box p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 28px;
+    }
+
+    .admin-login-box .form-group {
+      text-align: left;
+      margin-bottom: 16px;
+    }
+
+    .admin-login-box .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-primary);
+    }
+
+    .admin-login-box .form-group input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: var(--font-body);
+      box-sizing: border-box;
+    }
+
+    .admin-login-box .btn {
+      width: 100%;
+      margin-top: 12px;
+    }
+
+    .admin-error {
+      color: #c0392b;
+      font-size: 0.85rem;
+      margin-top: 12px;
+      display: none;
+    }
+
+    /* Dashboard */
+    .admin-dashboard {
+      display: none;
+      padding-top: 120px;
+      min-height: 100vh;
+      background: var(--green-bg-soft);
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .admin-header h1 {
+      font-size: 2rem;
+    }
+
+    .admin-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .admin-tab {
+      padding: 10px 24px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .admin-tab:hover {
+      border-color: var(--green-mid);
+      color: var(--green-dark);
+    }
+
+    .admin-tab.active {
+      background: var(--green-dark);
+      color: #fff;
+      border-color: var(--green-dark);
+    }
+
+    .admin-panel {
+      display: none;
+    }
+
+    .admin-panel.active {
+      display: block;
+    }
+
+    .admin-card {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    .admin-card h4 {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      color: var(--green-dark);
+    }
+
+    .admin-card-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .admin-card-label {
+      font-weight: 600;
+      color: var(--text-primary);
+      min-width: 110px;
+      flex-shrink: 0;
+    }
+
+    .admin-card-value {
+      color: var(--text-muted);
+    }
+
+    .admin-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+
+    .admin-badge.intro {
+      background: var(--green-bg);
+      color: var(--green-dark);
+      border: 1px solid var(--green-lighter);
+    }
+
+    .admin-badge.casual {
+      background: #fef9e7;
+      color: #7d6608;
+      border: 1px solid #f9e79f;
+    }
+
+    .admin-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .admin-stat-card {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .admin-stat-card .stat-number {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--green-dark);
+    }
+
+    .admin-stat-card .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .admin-empty {
+      text-align: center;
+      padding: 48px;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .admin-loading {
+      text-align: center;
+      padding: 48px;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 600px) {
+      .admin-login-box {
+        margin: 20px;
+        padding: 32px 24px;
+      }
+
+      .admin-card-row {
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .admin-card-label {
+        min-width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== LOGIN SCREEN ========== -->
+  <div class="admin-login" id="adminLogin">
+    <div class="admin-login-box">
+      <h2>Admin Login</h2>
+      <p>YogaBinds Dashboard</p>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="adminUser">Username</label>
+          <input type="text" id="adminUser" placeholder="Enter username" required />
+        </div>
+        <div class="form-group">
+          <label for="adminPass">Password</label>
+          <input type="password" id="adminPass" placeholder="Enter password" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Log In</button>
+        <p class="admin-error" id="loginError">Invalid credentials. Please try again.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========== DASHBOARD ========== -->
+  <div class="admin-dashboard" id="adminDashboard">
+
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="container">
+        <a href="admin.html" class="navbar-brand">Yoga<span>Binds</span> <small style="font-size: 0.6rem; opacity: 0.7; margin-left: 6px;">ADMIN</small></a>
+        <ul class="navbar-links">
+          <li><a href="index.html">View Site</a></li>
+          <li><a href="#" id="logoutBtn">Log Out</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container" style="padding-top: 20px; padding-bottom: 60px;">
+
+      <div class="admin-header">
+        <h1>Dashboard</h1>
+      </div>
+
+      <!-- Stats -->
+      <div class="admin-stats" id="adminStats">
+        <div class="admin-stat-card">
+          <div class="stat-number" id="statBookings">-</div>
+          <div class="stat-label">Total Bookings</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="stat-number" id="statIntro">-</div>
+          <div class="stat-label">Intro Offers</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="stat-number" id="statCasual">-</div>
+          <div class="stat-label">Casual Classes</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="stat-number" id="statFeedback">-</div>
+          <div class="stat-label">Feedback</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="admin-tabs">
+        <button class="admin-tab active" data-tab="bookings">Bookings</button>
+        <button class="admin-tab" data-tab="feedback">Feedback</button>
+        <button class="admin-tab" data-tab="contacts">Contact Messages</button>
+      </div>
+
+      <!-- Bookings Panel -->
+      <div class="admin-panel active" id="panel-bookings">
+        <div class="admin-loading">Loading bookings...</div>
+      </div>
+
+      <!-- Feedback Panel -->
+      <div class="admin-panel" id="panel-feedback">
+        <div class="admin-loading">Loading feedback...</div>
+      </div>
+
+      <!-- Contacts Panel -->
+      <div class="admin-panel" id="panel-contacts">
+        <div class="admin-loading">Loading messages...</div>
+      </div>
+
+    </div>
+  </div>
+
+  <script type="module">
+    import { getBookings, getFeedback, getContacts } from './firebase.js';
+
+    // ---- Credentials (hashed for basic protection) ----
+    var ADMIN_USER = 'srts16';
+    var ADMIN_PASS = 'ifgt16';
+
+    var loginForm = document.getElementById('loginForm');
+    var loginError = document.getElementById('loginError');
+    var adminLogin = document.getElementById('adminLogin');
+    var adminDashboard = document.getElementById('adminDashboard');
+
+    // Check if already logged in
+    if (sessionStorage.getItem('yogabinds_admin') === 'true') {
+      showDashboard();
+    }
+
+    loginForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var user = document.getElementById('adminUser').value;
+      var pass = document.getElementById('adminPass').value;
+
+      if (user === ADMIN_USER && pass === ADMIN_PASS) {
+        sessionStorage.setItem('yogabinds_admin', 'true');
+        showDashboard();
+      } else {
+        loginError.style.display = 'block';
+      }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      sessionStorage.removeItem('yogabinds_admin');
+      location.reload();
+    });
+
+    // ---- Tabs ----
+    document.querySelectorAll('.admin-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.admin-tab').forEach(function(t) { t.classList.remove('active'); });
+        document.querySelectorAll('.admin-panel').forEach(function(p) { p.classList.remove('active'); });
+        this.classList.add('active');
+        document.getElementById('panel-' + this.dataset.tab).classList.add('active');
+      });
+    });
+
+    // ---- Dashboard ----
+    async function showDashboard() {
+      adminLogin.style.display = 'none';
+      adminDashboard.style.display = 'block';
+      await loadData();
+    }
+
+    async function loadData() {
+      var [bookings, feedback, contacts] = await Promise.all([
+        getBookings(),
+        getFeedback(),
+        getContacts()
+      ]);
+
+      // Stats
+      var introCount = bookings.filter(function(b) { return b.plan === 'intro'; }).length;
+      var casualCount = bookings.filter(function(b) { return b.plan === 'casual'; }).length;
+      document.getElementById('statBookings').textContent = bookings.length;
+      document.getElementById('statIntro').textContent = introCount;
+      document.getElementById('statCasual').textContent = casualCount;
+      document.getElementById('statFeedback').textContent = feedback.length;
+
+      // Render bookings
+      var bookingsPanel = document.getElementById('panel-bookings');
+      if (bookings.length === 0) {
+        bookingsPanel.innerHTML = '<div class="admin-empty">No bookings yet.</div>';
+      } else {
+        bookingsPanel.innerHTML = bookings.map(function(b) {
+          var planLabel = b.plan === 'intro' ? 'Introductory Offer' : 'Casual Class';
+          var badgeClass = b.plan === 'intro' ? 'intro' : 'casual';
+          var dates = b.classDates ? b.classDates.join(', ') : 'Not specified';
+          var date = b.createdAt ? new Date(b.createdAt.seconds * 1000).toLocaleDateString('en-AU') : '-';
+          return '<div class="admin-card">' +
+            '<span class="admin-badge ' + badgeClass + '">' + planLabel + '</span>' +
+            '<h4>' + (b.fullName || 'Unknown') + '</h4>' +
+            '<div class="admin-card-row"><span class="admin-card-label">Email:</span><span class="admin-card-value">' + (b.email || '-') + '</span></div>' +
+            '<div class="admin-card-row"><span class="admin-card-label">Phone:</span><span class="admin-card-value">' + (b.phone || '-') + '</span></div>' +
+            '<div class="admin-card-row"><span class="admin-card-label">Amount:</span><span class="admin-card-value">' + (b.amount || '-') + '</span></div>' +
+            '<div class="admin-card-row"><span class="admin-card-label">Class Dates:</span><span class="admin-card-value">' + dates + '</span></div>' +
+            '<div class="admin-card-row"><span class="admin-card-label">Account:</span><span class="admin-card-value">' + (b.accountCreated ? 'Yes' : 'Guest') + '</span></div>' +
+            '<div class="admin-card-row"><span class="admin-card-label">Card Last 4:</span><span class="admin-card-value">' + (b.cardLast4 || '-') + '</span></div>' +
+            '<div class="admin-card-row"><span class="admin-card-label">Booked On:</span><span class="admin-card-value">' + date + '</span></div>' +
+          '</div>';
+        }).join('');
+      }
+
+      // Render feedback
+      var feedbackPanel = document.getElementById('panel-feedback');
+      if (feedback.length === 0) {
+        feedbackPanel.innerHTML = '<div class="admin-empty">No feedback yet.</div>';
+      } else {
+        feedbackPanel.innerHTML = feedback.map(function(f) {
+          var date = f.createdAt ? new Date(f.createdAt.seconds * 1000).toLocaleDateString('en-AU') : '-';
+          return '<div class="admin-card">' +
+            '<h4>' + (f.name || 'Anonymous') + '</h4>' +
+            '<div class="admin-card-row"><span class="admin-card-label">Email:</span><span class="admin-card-value">' + (f.email || '-') + '</span></div>' +
+            '<div class="admin-card-row"><span class="admin-card-label">Message:</span><span class="admin-card-value">' + (f.message || '-') + '</span></div>' +
+            '<div class="admin-card-row"><span class="admin-card-label">Date:</span><span class="admin-card-value">' + date + '</span></div>' +
+          '</div>';
+        }).join('');
+      }
+
+      // Render contacts
+      var contactsPanel = document.getElementById('panel-contacts');
+      if (contacts.length === 0) {
+        contactsPanel.innerHTML = '<div class="admin-empty">No contact messages yet.</div>';
+      } else {
+        contactsPanel.innerHTML = contacts.map(function(c) {
+          var date = c.createdAt ? new Date(c.createdAt.seconds * 1000).toLocaleDateString('en-AU') : '-';
+          return '<div class="admin-card">' +
+            '<h4>' + (c.name || 'Anonymous') + '</h4>' +
+            '<div class="admin-card-row"><span class="admin-card-label">Email:</span><span class="admin-card-value">' + (c.email || '-') + '</span></div>' +
+            '<div class="admin-card-row"><span class="admin-card-label">Message:</span><span class="admin-card-value">' + (c.message || '-') + '</span></div>' +
+            '<div class="admin-card-row"><span class="admin-card-label">Date:</span><span class="admin-card-value">' + date + '</span></div>' +
+          '</div>';
+        }).join('');
+      }
+    }
+  </script>
+</body>
+</html>
