@@ -19,7 +19,7 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, si
 // Replace the placeholder values below with your actual Firebase credentials.
 // Never commit real API keys to a public repository.
 const firebaseConfig = {
-  apiKey: "AIzaSyBdkU-JwarkIAHvsJrpiT8-fyUa2flqWnE",
+  apiKey: "AIzaSyBdkU-JwarklAHvsJrpiT8-fyUa2flqWnE",
   authDomain: "yogabinds-faa6f.firebaseapp.com",
   projectId: "yogabinds-faa6f",
   storageBucket: "yogabinds-faa6f.firebasestorage.app",
