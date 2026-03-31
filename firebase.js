@@ -13,6 +13,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
 // ---- YOUR FIREBASE CONFIG ----
 // Replace the placeholder values below with your actual Firebase credentials.
@@ -30,7 +31,41 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 const analytics = getAnalytics(app);
+
+// ---- Auth ----
+export async function loginUser(email, password) {
+  try {
+    const cred = await signInWithEmailAndPassword(auth, email, password);
+    return { success: true, user: cred.user };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+export async function signupUser(email, password) {
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    return { success: true, user: cred.user };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+export async function logoutUser() {
+  try {
+    await signOut(auth);
+    return true;
+  } catch (error) {
+    console.error("Error signing out:", error);
+    return false;
+  }
+}
+
+export function onAuthChange(callback) {
+  return onAuthStateChanged(auth, callback);
+}
 
 // ---- Save Feedback ----
 export async function saveFeedback(name, email, message) {

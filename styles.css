@@ -1235,6 +1235,13 @@ section {
   color: var(--green-darkest);
 }
 
+.modal-error {
+  font-size: 0.85rem;
+  color: #c0392b;
+  min-height: 1.2em;
+  margin-bottom: 8px;
+}
+
 /* --- Programmes Page (Landing) --- */
 .programmes-hero {
   padding-top: 140px;
