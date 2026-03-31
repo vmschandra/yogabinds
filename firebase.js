@@ -13,7 +13,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
 // ---- YOUR FIREBASE CONFIG ----
 // Replace the placeholder values below with your actual Firebase credentials.
@@ -65,6 +65,25 @@ export async function logoutUser() {
 
 export function onAuthChange(callback) {
   return onAuthStateChanged(auth, callback);
+}
+
+export async function resetPassword(email) {
+  try {
+    await sendPasswordResetEmail(auth, email);
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+export async function googleSignIn() {
+  try {
+    var provider = new GoogleAuthProvider();
+    var result = await signInWithPopup(auth, provider);
+    return { success: true, user: result.user };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
 }
 
 // ---- Save Feedback ----

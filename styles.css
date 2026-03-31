@@ -1242,6 +1242,109 @@ section {
   margin-bottom: 8px;
 }
 
+.modal-success {
+  font-size: 0.85rem;
+  color: var(--green-dark);
+  min-height: 1.2em;
+  margin-bottom: 8px;
+}
+
+.modal-forgot {
+  text-align: right;
+  margin: -12px 0 16px;
+}
+
+.modal-forgot a {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.modal-forgot a:hover {
+  color: var(--green-dark);
+}
+
+.modal-divider {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.modal-divider::before,
+.modal-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.modal-divider::before {
+  margin-right: 12px;
+}
+
+.modal-divider::after {
+  margin-left: 12px;
+}
+
+.btn-google {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 12px 28px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: var(--white);
+  color: var(--text-primary);
+  border: 1.5px solid var(--border);
+  border-radius: 0;
+  cursor: pointer;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.btn-google:hover {
+  background: var(--green-bg-soft);
+  border-color: var(--green-light);
+}
+
+.btn-google svg {
+  flex-shrink: 0;
+}
+
+.nav-user-email {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+}
+
+.auth-required-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.auth-required-box h3 {
+  font-size: 1.5rem;
+  margin-bottom: 12px;
+}
+
+.auth-required-box p {
+  color: var(--text-muted);
+  margin-bottom: 24px;
+  font-size: 1rem;
+}
+
 /* --- Programmes Page (Landing) --- */
 .programmes-hero {
   padding-top: 140px;

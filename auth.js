@@ -39,3 +39,7 @@ function switchToLogin(e) {
   closeSignupModal();
   openLoginModal();
 }
+
+function closeResetModal() {
+  document.getElementById('resetModal').classList.remove('active');
+}
