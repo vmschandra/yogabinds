@@ -167,11 +167,11 @@
 
     if (plan === 'casual') {
       titleEl.textContent = 'Casual Class';
-      priceEl.innerHTML = '<span class="currency">$</span>14.99 <span>AUD</span>';
+      priceEl.innerHTML = '<span class="currency">$</span>15.99 <span>AUD</span>';
       descEl.textContent = '1 yoga class, valid for 1 week from the date of purchase. Enjoy the experience.';
       summaryPlan.textContent = 'Casual Class';
       summaryClasses.textContent = '1';
-      summaryTotal.textContent = '$14.99 AUD';
+      summaryTotal.textContent = '$15.99 AUD';
 
       document.getElementById('classDate2Group').style.display = 'none';
       document.getElementById('classDate3Group').style.display = 'none';
@@ -250,7 +250,7 @@
         email: email,
         phone: phone,
         classDates: classDates,
-        amount: plan === 'casual' ? '$14.99 AUD' : '$29.99 AUD'
+        amount: plan === 'casual' ? '$15.99 AUD' : '$29.99 AUD'
       }));
 
       try {
