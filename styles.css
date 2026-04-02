@@ -1345,6 +1345,13 @@ section {
   font-size: 1rem;
 }
 
+.auth-choice-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
 /* --- FAQ Section --- */
 .faq-section {
   padding: var(--section-padding) 0;

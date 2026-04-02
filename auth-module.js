@@ -154,13 +154,39 @@ onAuthChange(function(user) {
     if (emailEl) emailEl.style.display = 'none';
   }
 
-  // Payment page: show form for both logged-in users and guests
+  // Payment page: show choice screen for guests, form for signed-in users
   if (document.querySelector('.payment-page')) {
-    var overlay = document.getElementById('paymentAuthOverlay');
-    if (overlay) overlay.style.display = 'none';
     var form = document.getElementById('paymentForm');
-    if (form && !document.getElementById('paymentSuccess').classList.contains('show')) {
-      form.style.display = '';
+    var overlay = document.getElementById('paymentAuthOverlay');
+    var successShown = document.getElementById('paymentSuccess').classList.contains('show');
+
+    if (user) {
+      // Signed in — show form directly
+      if (overlay) overlay.style.display = 'none';
+      if (form && !successShown) form.style.display = '';
+    } else {
+      // Not signed in — show guest/signin choice (unless guest already chose)
+      if (!window._guestCheckoutChosen) {
+        if (form) form.style.display = 'none';
+        if (!overlay) {
+          overlay = document.createElement('div');
+          overlay.id = 'paymentAuthOverlay';
+          overlay.className = 'auth-required-overlay';
+          overlay.innerHTML = '<div class="auth-required-box"><h3>How would you like to book?</h3><p>Sign in for a faster experience, or continue as a guest.</p><div class="auth-choice-buttons"><a href="#" class="btn btn-primary" id="paymentLoginBtn">Sign In</a><a href="#" class="btn btn-outline" id="paymentGuestBtn">Continue as Guest</a></div></div>';
+          form.parentNode.insertBefore(overlay, form);
+          document.getElementById('paymentLoginBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            openLoginModal();
+          });
+          document.getElementById('paymentGuestBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window._guestCheckoutChosen = true;
+            overlay.style.display = 'none';
+            form.style.display = '';
+          });
+        }
+        overlay.style.display = 'flex';
+      }
     }
   }
 });
