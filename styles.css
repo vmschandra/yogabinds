@@ -1351,6 +1351,12 @@ section {
   background: var(--green-bg-soft);
 }
 
+.faq-page {
+  padding-top: 140px;
+  padding-bottom: var(--section-padding);
+  background: var(--green-bg-soft);
+}
+
 .faq-list {
   max-width: 720px;
   margin: 0 auto;
