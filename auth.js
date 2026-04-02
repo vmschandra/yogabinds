@@ -40,6 +40,21 @@ function switchToLogin(e) {
   openLoginModal();
 }
 
+// ---- FAQ Accordion Toggle ----
+function toggleFaq(btn) {
+  var item = btn.parentElement;
+  var isOpen = item.classList.contains('active');
+  // Close all
+  var allItems = document.querySelectorAll('.faq-item');
+  for (var i = 0; i < allItems.length; i++) {
+    allItems[i].classList.remove('active');
+  }
+  // Open clicked (if wasn't already open)
+  if (!isOpen) {
+    item.classList.add('active');
+  }
+}
+
 function closeResetModal() {
   document.getElementById('resetModal').classList.remove('active');
 }
