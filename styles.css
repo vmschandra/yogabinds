@@ -1214,6 +1214,12 @@ section {
   color: var(--text-light);
 }
 
+.modal .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
 .modal .btn {
   width: 100%;
   margin-top: 8px;

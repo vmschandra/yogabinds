@@ -42,13 +42,31 @@ function injectModals() {
       <h2>Begin your journey.</h2>
       <p>Create a YogaBinds account to get started.</p>
       <form id="signupForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="signupFirstName">First Name</label>
+            <input type="text" id="signupFirstName" placeholder="First name" required autocomplete="given-name" />
+          </div>
+          <div class="form-group">
+            <label for="signupLastName">Last Name</label>
+            <input type="text" id="signupLastName" placeholder="Last name" required autocomplete="family-name" />
+          </div>
+        </div>
         <div class="form-group">
-          <label for="signupEmail">Email</label>
+          <label for="signupEmail">Email Address</label>
           <input type="email" id="signupEmail" placeholder="you@example.com" required autocomplete="email" />
         </div>
         <div class="form-group">
           <label for="signupPassword">Password</label>
-          <input type="password" id="signupPassword" placeholder="Create a password" required autocomplete="new-password" />
+          <input type="password" id="signupPassword" placeholder="Create a password" required autocomplete="new-password" minlength="6" />
+        </div>
+        <div class="form-group">
+          <label for="signupConfirmPassword">Confirm Password</label>
+          <input type="password" id="signupConfirmPassword" placeholder="Confirm your password" required autocomplete="new-password" minlength="6" />
+        </div>
+        <div class="form-group">
+          <label for="signupPhone">Phone Number</label>
+          <input type="tel" id="signupPhone" placeholder="+61 4XX XXX XXX" required autocomplete="tel" />
         </div>
         <div id="signupError" class="modal-error"></div>
         <button type="submit" class="btn btn-primary">Create Account</button>
@@ -128,8 +146,7 @@ onAuthChange(function(user) {
   if (!btn) return;
 
   if (user) {
-    var email = user.email || '';
-    var name = email.split('@')[0];
+    var name = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
     btn.textContent = 'Log out';
     btn.onclick = async function(e) {
       e.preventDefault();
@@ -228,14 +245,28 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
 // ---- Signup form ----
 document.getElementById('signupForm').addEventListener('submit', async function(e) {
   e.preventDefault();
+  var firstName = document.getElementById('signupFirstName').value;
+  var lastName = document.getElementById('signupLastName').value;
   var email = document.getElementById('signupEmail').value;
   var password = document.getElementById('signupPassword').value;
+  var confirmPassword = document.getElementById('signupConfirmPassword').value;
+  var phone = document.getElementById('signupPhone').value;
   var errorEl = document.getElementById('signupError');
   var submitBtn = this.querySelector('button[type="submit"]');
   errorEl.textContent = '';
+
+  if (password !== confirmPassword) {
+    errorEl.textContent = 'Passwords do not match.';
+    return;
+  }
+
   submitBtn.disabled = true;
   submitBtn.textContent = 'Creating account...';
-  var result = await signupUser(email, password);
+  var result = await signupUser(email, password, {
+    firstName: firstName,
+    lastName: lastName,
+    phone: phone
+  });
   if (result.success) {
     closeSignupModal();
     this.reset();
@@ -243,6 +274,7 @@ document.getElementById('signupForm').addEventListener('submit', async function(
     errorEl.textContent = result.error;
   }
   document.getElementById('signupPassword').value = '';
+  document.getElementById('signupConfirmPassword').value = '';
   submitBtn.disabled = false;
   submitBtn.textContent = 'Create Account';
 });

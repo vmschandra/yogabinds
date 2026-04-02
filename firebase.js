@@ -13,7 +13,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, getDoc, deleteDoc, doc, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup, updateProfile } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
 // ---- YOUR FIREBASE CONFIG ----
 // Replace the placeholder values below with your actual Firebase credentials.
@@ -44,9 +44,26 @@ export async function loginUser(email, password) {
   }
 }
 
-export async function signupUser(email, password) {
+export async function signupUser(email, password, profile) {
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
+    // Set display name
+    if (profile && profile.firstName) {
+      await updateProfile(cred.user, {
+        displayName: profile.firstName + ' ' + profile.lastName
+      });
+    }
+    // Save profile to Firestore
+    if (profile) {
+      await addDoc(collection(db, "users"), {
+        uid: cred.user.uid,
+        firstName: profile.firstName || '',
+        lastName: profile.lastName || '',
+        email: email,
+        phone: profile.phone || '',
+        createdAt: serverTimestamp()
+      });
+    }
     return { success: true, user: cred.user };
   } catch (error) {
     return { success: false, error: error.message };
