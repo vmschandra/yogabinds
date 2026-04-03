@@ -203,6 +203,30 @@ export async function getFeedback() {
   }
 }
 
+// ---- Fetch User Invoices ----
+export async function getUserInvoices(email) {
+  try {
+    const q = query(collection(db, "invoices"), where("customerEmail", "==", email), orderBy("createdAt", "desc"));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    console.error("Error fetching user invoices:", error);
+    return [];
+  }
+}
+
+// ---- Fetch All Invoices (Admin) ----
+export async function getInvoices() {
+  try {
+    const q = query(collection(db, "invoices"), orderBy("createdAt", "desc"));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    console.error("Error fetching invoices:", error);
+    return [];
+  }
+}
+
 // ---- Fetch Contact Messages ----
 export async function getContacts() {
   try {

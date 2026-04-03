@@ -52,6 +52,20 @@
       </div>
 
       <div id="bookingsList" class="bookings-list" style="display: none;"></div>
+
+      <!-- Invoices Section -->
+      <div id="invoicesSection" style="display: none; margin-top: 48px;">
+        <div class="section-header">
+          <h2>My Invoices.</h2>
+        </div>
+        <div id="invoicesLoading" style="text-align: center; padding: 20px 0; color: var(--text-muted);">
+          Loading invoices...
+        </div>
+        <div id="invoicesEmpty" style="display: none; text-align: center; padding: 20px 0;">
+          <p style="color: var(--text-muted); font-size: 0.95rem;">No invoices found.</p>
+        </div>
+        <div id="invoicesList" class="invoices-list" style="display: none;"></div>
+      </div>
     </div>
   </section>
 
@@ -82,19 +96,21 @@
   <script src="auth.js"></script>
   <script type="module" src="auth-module.js"></script>
   <script type="module">
-    import { onAuthChange, getUserBookings, cancelBooking } from './firebase.js';
+    import { onAuthChange, getUserBookings, cancelBooking, getUserInvoices } from './firebase.js';
 
     onAuthChange(async function(user) {
       var loginPrompt = document.getElementById('bookingsLoginPrompt');
       var loading = document.getElementById('bookingsLoading');
       var empty = document.getElementById('bookingsEmpty');
       var list = document.getElementById('bookingsList');
+      var invoicesSection = document.getElementById('invoicesSection');
 
       // Hide all first
       loginPrompt.style.display = 'none';
       loading.style.display = 'none';
       empty.style.display = 'none';
       list.style.display = 'none';
+      invoicesSection.style.display = 'none';
 
       if (!user) {
         loginPrompt.style.display = 'flex';
@@ -198,6 +214,49 @@
           }
         });
       });
+
+      // ── Load Invoices ──
+      invoicesSection.style.display = 'block';
+      var invoicesLoading = document.getElementById('invoicesLoading');
+      var invoicesEmpty = document.getElementById('invoicesEmpty');
+      var invoicesList = document.getElementById('invoicesList');
+
+      invoicesLoading.style.display = 'block';
+      invoicesEmpty.style.display = 'none';
+      invoicesList.style.display = 'none';
+
+      var invoices = await getUserInvoices(user.email);
+      invoicesLoading.style.display = 'none';
+
+      if (invoices.length === 0) {
+        invoicesEmpty.style.display = 'block';
+      } else {
+        invoicesList.style.display = 'block';
+        invoicesList.innerHTML = '';
+
+        invoices.forEach(function(inv) {
+          var card = document.createElement('div');
+          card.className = 'invoice-card';
+          card.innerHTML =
+            '<div class="invoice-card-header">' +
+              '<div>' +
+                '<span class="invoice-number">' + inv.invoiceNumber + '</span>' +
+                '<span class="invoice-date">' + inv.invoiceDate + '</span>' +
+              '</div>' +
+              '<div class="invoice-amount">$' + (inv.amount ? inv.amount.toFixed(2) : '15.99') + ' AUD</div>' +
+            '</div>' +
+            '<div class="invoice-card-body">' +
+              '<span class="invoice-desc">' + (inv.description || 'Yoga Session') + '</span>' +
+              (inv.classDates ? '<span class="invoice-dates">Classes: ' + inv.classDates + '</span>' : '') +
+            '</div>' +
+            '<div class="invoice-card-footer">' +
+              '<span class="invoice-status">' + (inv.emailSent ? 'Emailed' : 'Generated') + '</span>' +
+              '<a href="/api/download-invoice?invoiceId=' + inv.id + '" class="btn btn-outline btn-small" target="_blank">Download PDF</a>' +
+            '</div>';
+
+          invoicesList.appendChild(card);
+        });
+      }
     });
   </script>
 </body>
