@@ -4,11 +4,12 @@ const { db } = require('./lib/firebase-admin');
 const { generateInvoicePDF } = require('./lib/invoice-pdf');
 
 // Disable Vercel's automatic body parsing — Stripe needs the raw body
-module.exports.config = {
+const config = {
   api: {
     bodyParser: false
   }
 };
+module.exports.config = config;
 
 // Read raw body from the request stream
 function getRawBody(req) {
@@ -32,9 +33,17 @@ module.exports = async function handler(req, res) {
   let event;
 
   try {
-    const rawBody = await getRawBody(req);
-    const sig = req.headers['stripe-signature'];
+    // Get raw body — handle both pre-parsed and stream cases
+    let rawBody;
+    if (req.body && typeof req.body === 'object') {
+      rawBody = JSON.stringify(req.body);
+    } else if (req.body && typeof req.body === 'string') {
+      rawBody = req.body;
+    } else {
+      rawBody = await getRawBody(req);
+    }
 
+    const sig = req.headers['stripe-signature'];
     event = stripe.webhooks.constructEvent(rawBody, sig, endpointSecret);
   } catch (err) {
     console.error('Webhook signature verification failed:', err.message);
@@ -47,10 +56,10 @@ module.exports = async function handler(req, res) {
 
     try {
       await handleSuccessfulPayment(session);
+      console.log('Invoice processed successfully for session:', session.id);
     } catch (err) {
-      console.error('Error processing invoice:', err);
+      console.error('Error processing invoice:', err.message, err.stack);
       // Return 200 anyway so Stripe doesn't retry endlessly
-      // The error is logged for debugging
     }
   }
 
@@ -124,20 +133,27 @@ async function handleSuccessfulPayment(session) {
     emailSent: false
   });
 
-  // Send invoice email to customer
-  await sendInvoiceEmail(customerEmail, customerName, invoiceNumber, pdfBuffer);
+  console.log(`Invoice ${invoiceNumber} saved to Firestore for ${customerEmail}`);
 
-  // Mark email as sent
-  const invoiceQuery = await db.collection('invoices')
-    .where('invoiceNumber', '==', invoiceNumber)
-    .limit(1)
-    .get();
+  // Send invoice email to customer (non-fatal if it fails)
+  try {
+    await sendInvoiceEmail(customerEmail, customerName, invoiceNumber, pdfBuffer);
 
-  if (!invoiceQuery.empty) {
-    await invoiceQuery.docs[0].ref.update({ emailSent: true });
+    // Mark email as sent
+    const invoiceQuery = await db.collection('invoices')
+      .where('invoiceNumber', '==', invoiceNumber)
+      .limit(1)
+      .get();
+
+    if (!invoiceQuery.empty) {
+      await invoiceQuery.docs[0].ref.update({ emailSent: true });
+    }
+
+    console.log(`Invoice ${invoiceNumber} emailed to ${customerEmail}`);
+  } catch (emailErr) {
+    console.error(`Failed to email invoice ${invoiceNumber}:`, emailErr.message);
+    // Invoice is still saved in Firestore — email can be retried
   }
-
-  console.log(`Invoice ${invoiceNumber} generated and emailed to ${customerEmail}`);
 }
 
 async function sendInvoiceEmail(email, name, invoiceNumber, pdfBuffer) {
