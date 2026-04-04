@@ -3,14 +3,6 @@ const { Resend } = require('resend');
 const { db } = require('./lib/firebase-admin');
 const { generateInvoicePDF } = require('./lib/invoice-pdf');
 
-// Disable Vercel's automatic body parsing — Stripe needs the raw body
-const config = {
-  api: {
-    bodyParser: false
-  }
-};
-module.exports.config = config;
-
 // Read raw body from the request stream
 function getRawBody(req) {
   return new Promise((resolve, reject) => {
@@ -21,7 +13,7 @@ function getRawBody(req) {
   });
 }
 
-module.exports = async function handler(req, res) {
+async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed' });
@@ -30,25 +22,28 @@ module.exports = async function handler(req, res) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
+  // Log env check (will appear in Vercel logs)
+  console.log('Webhook called. Has STRIPE_SECRET_KEY:', !!process.env.STRIPE_SECRET_KEY);
+  console.log('Has STRIPE_WEBHOOK_SECRET:', !!process.env.STRIPE_WEBHOOK_SECRET);
+  console.log('Has FIREBASE_SERVICE_ACCOUNT:', !!process.env.FIREBASE_SERVICE_ACCOUNT);
+  console.log('Has RESEND_API_KEY:', !!process.env.RESEND_API_KEY);
+
   let event;
 
   try {
-    // Get raw body — handle both pre-parsed and stream cases
-    let rawBody;
-    if (req.body && typeof req.body === 'object') {
-      rawBody = JSON.stringify(req.body);
-    } else if (req.body && typeof req.body === 'string') {
-      rawBody = req.body;
-    } else {
-      rawBody = await getRawBody(req);
-    }
-
+    const rawBody = await getRawBody(req);
     const sig = req.headers['stripe-signature'];
+
+    console.log('Raw body length:', rawBody.length);
+    console.log('Has stripe-signature:', !!sig);
+
     event = stripe.webhooks.constructEvent(rawBody, sig, endpointSecret);
   } catch (err) {
     console.error('Webhook signature verification failed:', err.message);
-    return res.status(400).json({ error: 'Webhook signature verification failed' });
+    return res.status(400).json({ error: 'Webhook signature verification failed: ' + err.message });
   }
+
+  console.log('Event type:', event.type);
 
   // Only process successful checkout sessions
   if (event.type === 'checkout.session.completed') {
@@ -59,13 +54,12 @@ module.exports = async function handler(req, res) {
       console.log('Invoice processed successfully for session:', session.id);
     } catch (err) {
       console.error('Error processing invoice:', err.message, err.stack);
-      // Return 200 anyway so Stripe doesn't retry endlessly
     }
   }
 
   // Acknowledge receipt to Stripe
   return res.status(200).json({ received: true });
-};
+}
 
 async function handleSuccessfulPayment(session) {
   const customerName = session.metadata.fullName || 'Customer';
@@ -84,7 +78,7 @@ async function handleSuccessfulPayment(session) {
     classDates = '';
   }
 
-  const amount = session.amount_total / 100; // Convert cents to dollars
+  const amount = session.amount_total / 100;
   const description = plan === 'casual'
     ? 'Yoga Session — Casual Class'
     : 'Yoga Sessions — Introductory Offer (3 Classes)';
@@ -126,7 +120,7 @@ async function handleSuccessfulPayment(session) {
   // Generate the PDF
   const pdfBuffer = await generateInvoicePDF(invoiceData);
 
-  // Store invoice record in Firestore (PDF stored as base64 for admin download)
+  // Store invoice record in Firestore
   await db.collection('invoices').add({
     ...invoiceData,
     pdfBase64: pdfBuffer.toString('base64'),
@@ -139,7 +133,6 @@ async function handleSuccessfulPayment(session) {
   try {
     await sendInvoiceEmail(customerEmail, customerName, invoiceNumber, pdfBuffer);
 
-    // Mark email as sent
     const invoiceQuery = await db.collection('invoices')
       .where('invoiceNumber', '==', invoiceNumber)
       .limit(1)
@@ -152,7 +145,6 @@ async function handleSuccessfulPayment(session) {
     console.log(`Invoice ${invoiceNumber} emailed to ${customerEmail}`);
   } catch (emailErr) {
     console.error(`Failed to email invoice ${invoiceNumber}:`, emailErr.message);
-    // Invoice is still saved in Firestore — email can be retried
   }
 }
 
@@ -160,7 +152,7 @@ async function sendInvoiceEmail(email, name, invoiceNumber, pdfBuffer) {
   const resend = new Resend(process.env.RESEND_API_KEY);
 
   await resend.emails.send({
-    from: process.env.EMAIL_FROM || 'YogaBinds <invoices@yogabinds.com>',
+    from: process.env.EMAIL_FROM || 'YogaBinds <onboarding@resend.dev>',
     to: [email],
     subject: `Your YogaBinds Invoice — ${invoiceNumber}`,
     html: `
@@ -194,3 +186,12 @@ async function sendInvoiceEmail(email, name, invoiceNumber, pdfBuffer) {
     ]
   });
 }
+
+// Export handler FIRST, then attach config
+// This order is critical — otherwise config gets wiped
+module.exports = handler;
+module.exports.config = {
+  api: {
+    bodyParser: false
+  }
+};
