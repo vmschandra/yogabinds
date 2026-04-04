@@ -184,7 +184,7 @@
     // Restrict date pickers to Thursdays only using Flatpickr
     var fp1 = flatpickr('#classDate1', {
       minDate: 'today',
-      dateFormat: 'Y-m-d',
+      dateFormat: 'd-m-Y',
       enable: [function(date) { return date.getDay() === 4; }],
       onChange: function(selectedDates) {
         if (selectedDates.length > 0) {
@@ -198,7 +198,7 @@
     });
     var fp2 = flatpickr('#classDate2', {
       minDate: 'today',
-      dateFormat: 'Y-m-d',
+      dateFormat: 'd-m-Y',
       enable: [function(date) { return date.getDay() === 4; }],
       onChange: function(selectedDates) {
         if (selectedDates.length > 0) {
@@ -211,7 +211,7 @@
     });
     var fp3 = flatpickr('#classDate3', {
       minDate: 'today',
-      dateFormat: 'Y-m-d',
+      dateFormat: 'd-m-Y',
       enable: [function(date) { return date.getDay() === 4; }]
     });
 
@@ -235,12 +235,18 @@
         return;
       }
 
+      // Convert d-m-Y display format to Y-m-d for storage
+      function toISODate(dmyDate) {
+        var parts = dmyDate.split('-');
+        return parts[2] + '-' + parts[1] + '-' + parts[0];
+      }
+
       var classDates = plan === 'casual'
-        ? [document.getElementById('classDate1').value]
+        ? [toISODate(document.getElementById('classDate1').value)]
         : [
-            document.getElementById('classDate1').value,
-            document.getElementById('classDate2').value,
-            document.getElementById('classDate3').value
+            toISODate(document.getElementById('classDate1').value),
+            toISODate(document.getElementById('classDate2').value),
+            toISODate(document.getElementById('classDate3').value)
           ];
 
       // Save booking data to sessionStorage (retrieved on success page)
