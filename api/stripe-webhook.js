@@ -198,6 +198,24 @@ async function handler(req, res) {
 
       console.log('Invoice ' + invoiceNumber + ' saved to Firestore for ' + customerEmail);
 
+      // Update matching booking with stripePaymentIntent for refund support
+      try {
+        var bookingsQuery = await db.collection('bookings')
+          .where('email', '==', customerEmail)
+          .where('paymentStatus', '==', 'paid')
+          .get();
+
+        bookingsQuery.forEach(function(doc) {
+          var data = doc.data();
+          if (!data.stripePaymentIntent) {
+            doc.ref.update({ stripePaymentIntent: session.payment_intent });
+            console.log('Updated booking ' + doc.id + ' with payment intent ' + session.payment_intent);
+          }
+        });
+      } catch (bookingErr) {
+        console.error('Failed to update booking with payment intent:', bookingErr.message);
+      }
+
       // Send email (non-fatal)
       try {
         var resend = new Resend(process.env.RESEND_API_KEY);

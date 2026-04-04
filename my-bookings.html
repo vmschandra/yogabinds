@@ -167,14 +167,18 @@
         }
 
         var cancelBtnHtml = '';
-        if (canCancel) {
+        var isCancelled = booking.status === 'cancelled';
+
+        if (isCancelled) {
+          cancelBtnHtml = '<span class="refund-status">Cancelled — Refund processed' + (booking.refundId ? ' (' + booking.refundId + ')' : '') + '</span>';
+        } else if (canCancel) {
           cancelBtnHtml = '<button class="btn btn-outline btn-small cancel-booking-btn" data-id="' + booking.id + '">Cancel Booking</button>';
         } else {
           cancelBtnHtml = '<span class="cancel-unavailable">Cancellation unavailable (within 24 hours of class)</span>';
         }
 
         var card = document.createElement('div');
-        card.className = 'booking-card';
+        card.className = 'booking-card' + (isCancelled ? ' booking-cancelled' : '');
         card.innerHTML =
           '<div class="booking-card-header">' +
             '<div><h3>' + plan + '</h3>' +
@@ -196,19 +200,42 @@
       cancelBtns.forEach(function(btn) {
         btn.addEventListener('click', async function() {
           var id = this.getAttribute('data-id');
-          if (!confirm('Are you sure you want to cancel this booking? This action cannot be undone.')) return;
+          if (!confirm('Are you sure you want to cancel this booking? A refund will be processed to your original payment method.')) return;
           this.disabled = true;
-          this.textContent = 'Cancelling...';
-          var result = await cancelBooking(id);
-          if (result.success) {
-            this.closest('.booking-card').remove();
-            // Check if list is now empty
-            if (document.querySelectorAll('.booking-card').length === 0) {
-              list.style.display = 'none';
-              empty.style.display = 'block';
+          this.textContent = 'Processing refund...';
+
+          try {
+            var response = await fetch('/api/refund-booking', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ bookingId: id, uid: user.uid })
+            });
+            var result = await response.json();
+
+            if (response.ok && result.success) {
+              var card = this.closest('.booking-card');
+              if (result.refunded) {
+                // Show refunded status instead of removing
+                card.querySelector('.booking-actions').innerHTML =
+                  '<span class="refund-status">Cancelled — Refund processed (' + result.refundId + ')</span>';
+                card.classList.add('booking-cancelled');
+              } else {
+                card.remove();
+              }
+              // Check if list is now empty (only non-cancelled)
+              if (document.querySelectorAll('.booking-card:not(.booking-cancelled)').length === 0 &&
+                  document.querySelectorAll('.booking-card').length === 0) {
+                list.style.display = 'none';
+                empty.style.display = 'block';
+              }
+              alert(result.message || 'Booking cancelled successfully.');
+            } else {
+              alert('Failed to cancel: ' + (result.error || 'Please try again.'));
+              this.disabled = false;
+              this.textContent = 'Cancel Booking';
             }
-          } else {
-            alert('Failed to cancel: ' + (result.error || 'Please try again.'));
+          } catch (err) {
+            alert('Something went wrong. Please try again.');
             this.disabled = false;
             this.textContent = 'Cancel Booking';
           }
