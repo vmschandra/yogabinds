@@ -201,10 +201,14 @@ async function handler(req, res) {
       // Send email (non-fatal)
       try {
         var resend = new Resend(process.env.RESEND_API_KEY);
-        await resend.emails.send({
+        console.log('Sending email to: ' + customerEmail);
+        console.log('From: ' + (process.env.EMAIL_FROM || 'YogaBinds <onboarding@resend.dev>'));
+        console.log('RESEND_API_KEY exists: ' + !!process.env.RESEND_API_KEY);
+
+        var emailResult = await resend.emails.send({
           from: process.env.EMAIL_FROM || 'YogaBinds <onboarding@resend.dev>',
-          to: [customerEmail],
-          subject: 'Your YogaBinds Invoice — ' + invoiceNumber,
+          to: customerEmail,
+          subject: 'Your YogaBinds Invoice - ' + invoiceNumber,
           html: '<div style="font-family:Helvetica Neue,Arial,sans-serif;max-width:560px;margin:0 auto;padding:40px 20px;color:#333;">' +
             '<h2 style="color:#2d5e3f;margin-bottom:4px;">YogaBinds</h2>' +
             '<p style="color:#999;font-size:13px;margin-top:0;">A yoga studio rooted in ancient tradition</p>' +
@@ -219,17 +223,23 @@ async function handler(req, res) {
             '</div>',
           attachments: [{
             filename: invoiceNumber + '.pdf',
-            content: pdfBuffer.toString('base64'),
-            contentType: 'application/pdf'
+            content: pdfBuffer
           }]
         });
 
-        // Mark email sent
-        var invoiceQuery = await db.collection('invoices').where('invoiceNumber', '==', invoiceNumber).limit(1).get();
-        if (!invoiceQuery.empty) { await invoiceQuery.docs[0].ref.update({ emailSent: true }); }
-        console.log('Invoice ' + invoiceNumber + ' emailed to ' + customerEmail);
+        console.log('Resend response:', JSON.stringify(emailResult));
+
+        // Check if Resend returned an error
+        if (emailResult.error) {
+          console.error('Resend error:', JSON.stringify(emailResult.error));
+        } else {
+          // Mark email sent only on actual success
+          var invoiceQuery = await db.collection('invoices').where('invoiceNumber', '==', invoiceNumber).limit(1).get();
+          if (!invoiceQuery.empty) { await invoiceQuery.docs[0].ref.update({ emailSent: true }); }
+          console.log('Invoice ' + invoiceNumber + ' emailed to ' + customerEmail);
+        }
       } catch (emailErr) {
-        console.error('Failed to email invoice:', emailErr.message);
+        console.error('Failed to email invoice:', emailErr.message, emailErr.stack);
       }
 
     } catch (err) {
