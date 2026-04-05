@@ -15,10 +15,25 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  var { bookingId, uid } = req.body;
+  // ── Server-side authentication via Firebase ID token ──
+  var authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
 
-  if (!bookingId || !uid) {
-    return res.status(400).json({ error: 'Missing bookingId or uid' });
+  var idToken = authHeader.split('Bearer ')[1];
+  var decoded;
+  try {
+    decoded = await admin.auth().verifyIdToken(idToken);
+  } catch (authErr) {
+    return res.status(401).json({ error: 'Invalid or expired session. Please sign in again.' });
+  }
+
+  var verifiedUid = decoded.uid;
+  var { bookingId } = req.body;
+
+  if (!bookingId) {
+    return res.status(400).json({ error: 'Missing booking reference' });
   }
 
   try {
@@ -30,9 +45,14 @@ module.exports = async function handler(req, res) {
 
     var booking = bookingDoc.data();
 
-    // Verify the booking belongs to this user
-    if (booking.uid !== uid) {
-      return res.status(403).json({ error: 'Unauthorized' });
+    // Verify the booking belongs to the authenticated user (server-verified uid)
+    if (booking.uid !== verifiedUid) {
+      return res.status(403).json({ error: 'You do not have permission to cancel this booking' });
+    }
+
+    // Prevent double refund
+    if (booking.status === 'cancelled') {
+      return res.status(400).json({ error: 'This booking has already been cancelled' });
     }
 
     // Check 24-hour cancellation policy
@@ -53,10 +73,9 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: 'Cancellation not allowed within 24 hours of class' });
     }
 
-    // Find the payment intent from the invoice (linked by Stripe session)
+    // Find the payment intent
     var paymentIntentId = booking.stripePaymentIntent || null;
 
-    // If not on booking, try to find from invoices collection
     if (!paymentIntentId) {
       var invoiceQuery = await db.collection('invoices')
         .where('customerEmail', '==', booking.email || booking.customerEmail || '')
@@ -70,9 +89,10 @@ module.exports = async function handler(req, res) {
     }
 
     if (!paymentIntentId) {
-      // No payment intent found — delete booking without refund (might be a guest/test booking)
-      await db.collection('bookings').doc(bookingId).delete();
-      console.log('Booking ' + bookingId + ' cancelled without refund (no payment intent found)');
+      await db.collection('bookings').doc(bookingId).update({
+        status: 'cancelled',
+        cancelledAt: new Date().toISOString()
+      });
       return res.status(200).json({ success: true, refunded: false, message: 'Booking cancelled. No payment record found for refund.' });
     }
 
@@ -84,9 +104,7 @@ module.exports = async function handler(req, res) {
       reason: 'requested_by_customer'
     });
 
-    console.log('Refund created:', refund.id, 'for payment intent:', paymentIntentId);
-
-    // Update booking status instead of deleting (keep record)
+    // Update booking status
     await db.collection('bookings').doc(bookingId).update({
       status: 'cancelled',
       refundId: refund.id,
@@ -109,8 +127,6 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    console.log('Booking ' + bookingId + ' cancelled and refund processed: ' + refund.id);
-
     // Send refund confirmation email (non-fatal)
     var customerEmail = booking.email || booking.customerEmail || '';
     var customerName = booking.fullName || booking.customerName || 'Customer';
@@ -132,7 +148,6 @@ module.exports = async function handler(req, res) {
           '<table style="width:100%;margin:24px 0;border-collapse:collapse;">' +
             '<tr style="background:#f5f5f5;"><td style="padding:10px 12px;font-size:13px;color:#666;">Refund Amount</td><td style="padding:10px 12px;font-size:13px;font-weight:bold;text-align:right;">$' + refundAmount + ' AUD</td></tr>' +
             '<tr><td style="padding:10px 12px;font-size:13px;color:#666;border-top:1px solid #eee;">Refund Date</td><td style="padding:10px 12px;font-size:13px;text-align:right;border-top:1px solid #eee;">' + refundDate + '</td></tr>' +
-            '<tr><td style="padding:10px 12px;font-size:13px;color:#666;border-top:1px solid #eee;">Refund ID</td><td style="padding:10px 12px;font-size:13px;text-align:right;border-top:1px solid #eee;">' + refund.id + '</td></tr>' +
           '</table>' +
           '<p>The refund will appear on your original payment method within <strong>5-10 business days</strong>.</p>' +
           '<p>If you have any questions, please contact us at yogabinds26@gmail.com.</p>' +
@@ -141,21 +156,17 @@ module.exports = async function handler(req, res) {
           '<p style="font-size:11px;color:#999;">This is an automated email from YogaBinds.</p>' +
           '</div>'
       });
-      console.log('Refund email sent to ' + customerEmail);
     } catch (emailErr) {
-      console.error('Failed to send refund email:', emailErr.message);
+      // Email failure is non-fatal — refund is already processed
     }
 
     return res.status(200).json({
       success: true,
       refunded: true,
-      refundId: refund.id,
-      refundStatus: refund.status,
       message: 'Booking cancelled and refund of $' + refundAmount + ' AUD processed.'
     });
 
   } catch (error) {
-    console.error('Refund error:', error.message, error.stack);
-    return res.status(500).json({ error: 'Failed to process cancellation: ' + error.message });
+    return res.status(500).json({ error: 'Unable to process cancellation. Please try again or contact support.' });
   }
 };

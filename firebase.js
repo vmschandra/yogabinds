@@ -203,32 +203,14 @@ export async function getFeedback() {
   }
 }
 
-// ---- Fetch User Invoices ----
-export async function getUserInvoices(email) {
+// ---- Get Firebase Auth ID Token (for authenticated API calls) ----
+export async function getAuthToken() {
+  var user = auth.currentUser;
+  if (!user) return null;
   try {
-    const q = query(collection(db, "invoices"), where("customerEmail", "==", email));
-    const snapshot = await getDocs(q);
-    var invoices = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    // Sort by createdAt descending (client-side to avoid composite index)
-    invoices.sort(function(a, b) {
-      return (b.createdAt || '').localeCompare(a.createdAt || '');
-    });
-    return invoices;
+    return await user.getIdToken();
   } catch (error) {
-    console.error("Error fetching user invoices:", error);
-    return [];
-  }
-}
-
-// ---- Fetch All Invoices (Admin) ----
-export async function getInvoices() {
-  try {
-    const q = query(collection(db, "invoices"), orderBy("createdAt", "desc"));
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  } catch (error) {
-    console.error("Error fetching invoices:", error);
-    return [];
+    return null;
   }
 }
 

@@ -83,7 +83,7 @@
   <script src="auth.js"></script>
   <script type="module" src="auth-module.js"></script>
   <script type="module">
-    import { onAuthChange, getUserBookings, cancelBooking } from './firebase.js';
+    import { onAuthChange, getUserBookings, cancelBooking, getAuthToken } from './firebase.js';
 
     onAuthChange(async function(user) {
       var loginPrompt = document.getElementById('bookingsLoginPrompt');
@@ -189,10 +189,21 @@
           this.textContent = 'Processing refund...';
 
           try {
+            var token = await getAuthToken();
+            if (!token) {
+              alert('Your session has expired. Please sign in again.');
+              this.disabled = false;
+              this.textContent = 'Cancel Booking';
+              return;
+            }
+
             var response = await fetch('/api/refund-booking', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ bookingId: id, uid: user.uid })
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+              },
+              body: JSON.stringify({ bookingId: id })
             });
             var result = await response.json();
 

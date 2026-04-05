@@ -2,10 +2,10 @@ const admin = require('firebase-admin');
 
 // Initialize Firebase Admin SDK (singleton)
 if (!admin.apps.length) {
-  const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+  var serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
   admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
 }
-const db = admin.firestore();
+var db = admin.firestore();
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -13,9 +13,23 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // ── Server-side authentication via Firebase ID token ──
+  var authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
+
+  var idToken = authHeader.split('Bearer ')[1];
+  var decoded;
+  try {
+    decoded = await admin.auth().verifyIdToken(idToken);
+  } catch (authErr) {
+    return res.status(401).json({ error: 'Invalid or expired session' });
+  }
+
   var invoiceId = req.query.invoiceId;
   if (!invoiceId) {
-    return res.status(400).json({ error: 'Missing invoiceId parameter' });
+    return res.status(400).json({ error: 'Missing invoice reference' });
   }
 
   try {
@@ -25,6 +39,12 @@ module.exports = async function handler(req, res) {
     }
 
     var invoice = invoiceDoc.data();
+
+    // Verify the invoice belongs to the authenticated user
+    if (invoice.customerEmail !== decoded.email) {
+      return res.status(403).json({ error: 'You do not have permission to access this invoice' });
+    }
+
     if (invoice.pdfBase64) {
       var pdfBuffer = Buffer.from(invoice.pdfBase64, 'base64');
       res.setHeader('Content-Type', 'application/pdf');
@@ -32,9 +52,8 @@ module.exports = async function handler(req, res) {
       return res.status(200).send(pdfBuffer);
     }
 
-    return res.status(404).json({ error: 'PDF not available' });
+    return res.status(404).json({ error: 'Invoice PDF not available' });
   } catch (error) {
-    console.error('Error downloading invoice:', error);
-    return res.status(500).json({ error: 'Failed to download invoice' });
+    return res.status(500).json({ error: 'Unable to retrieve invoice' });
   }
 };

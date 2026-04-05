@@ -121,11 +121,8 @@ async function handler(req, res) {
     const sig = req.headers['stripe-signature'];
     event = stripe.webhooks.constructEvent(rawBody, sig, endpointSecret);
   } catch (err) {
-    console.error('Webhook signature verification failed:', err.message);
-    return res.status(400).json({ error: 'Webhook signature verification failed' });
+    return res.status(400).json({ error: 'Webhook verification failed' });
   }
-
-  console.log('Webhook event received:', event.type);
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
@@ -196,8 +193,6 @@ async function handler(req, res) {
         emailSent: false
       });
 
-      console.log('Invoice ' + invoiceNumber + ' saved to Firestore for ' + customerEmail);
-
       // Update matching booking with stripePaymentIntent for refund support
       try {
         var bookingsQuery = await db.collection('bookings')
@@ -209,19 +204,15 @@ async function handler(req, res) {
           var data = doc.data();
           if (!data.stripePaymentIntent) {
             doc.ref.update({ stripePaymentIntent: session.payment_intent });
-            console.log('Updated booking ' + doc.id + ' with payment intent ' + session.payment_intent);
           }
         });
       } catch (bookingErr) {
-        console.error('Failed to update booking with payment intent:', bookingErr.message);
+        // Non-fatal — invoice is already saved
       }
 
       // Send email (non-fatal)
       try {
         var resend = new Resend(process.env.RESEND_API_KEY);
-        console.log('Sending email to: ' + customerEmail);
-        console.log('From: ' + (process.env.EMAIL_FROM || 'YogaBinds <onboarding@resend.dev>'));
-        console.log('RESEND_API_KEY exists: ' + !!process.env.RESEND_API_KEY);
 
         var emailResult = await resend.emails.send({
           from: process.env.EMAIL_FROM || 'YogaBinds <onboarding@resend.dev>',
@@ -245,23 +236,17 @@ async function handler(req, res) {
           }]
         });
 
-        console.log('Resend response:', JSON.stringify(emailResult));
-
         // Check if Resend returned an error
-        if (emailResult.error) {
-          console.error('Resend error:', JSON.stringify(emailResult.error));
-        } else {
-          // Mark email sent only on actual success
+        if (!emailResult.error) {
           var invoiceQuery = await db.collection('invoices').where('invoiceNumber', '==', invoiceNumber).limit(1).get();
           if (!invoiceQuery.empty) { await invoiceQuery.docs[0].ref.update({ emailSent: true }); }
-          console.log('Invoice ' + invoiceNumber + ' emailed to ' + customerEmail);
         }
       } catch (emailErr) {
-        console.error('Failed to email invoice:', emailErr.message, emailErr.stack);
+        // Email failure is non-fatal — invoice is already saved
       }
 
     } catch (err) {
-      console.error('Error processing invoice:', err.message, err.stack);
+      // Log server-side only, don't expose details
     }
   }
 
