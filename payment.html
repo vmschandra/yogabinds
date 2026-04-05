@@ -292,8 +292,10 @@
 
         var data = await response.json();
 
-        if (data.url) {
+        if (data.url && data.url.startsWith('https://checkout.stripe.com/')) {
           window.location.href = data.url;
+        } else if (data.url) {
+          throw new Error('Invalid payment redirect');
         } else {
           throw new Error(data.error || 'Failed to create payment session');
         }

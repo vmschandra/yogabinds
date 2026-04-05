@@ -9,6 +9,21 @@ if (!admin.apps.length) {
 }
 var db = admin.firestore();
 
+// ── Simple in-memory rate limiter ──
+var rateMap = {};
+var RATE_WINDOW = 60 * 1000;
+var RATE_LIMIT = 3; // max 3 refund requests per IP per minute
+
+function isRateLimited(ip) {
+  var now = Date.now();
+  if (!rateMap[ip] || now - rateMap[ip].start > RATE_WINDOW) {
+    rateMap[ip] = { start: now, count: 1 };
+    return false;
+  }
+  rateMap[ip].count++;
+  return rateMap[ip].count > RATE_LIMIT;
+}
+
 function escapeHTML(str) {
   if (!str) return '';
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
@@ -18,6 +33,12 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  // Rate limiting
+  var clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+  if (isRateLimited(clientIp)) {
+    return res.status(429).json({ error: 'Too many requests. Please try again shortly.' });
   }
 
   // ── Server-side authentication via Firebase ID token ──

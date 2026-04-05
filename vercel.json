@@ -1,4 +1,18 @@
 {
+  "functions": {
+    "api/create-checkout-session.js": {
+      "maxDuration": 10
+    },
+    "api/refund-booking.js": {
+      "maxDuration": 15
+    },
+    "api/stripe-webhook.js": {
+      "maxDuration": 30
+    },
+    "api/download-invoice.js": {
+      "maxDuration": 10
+    }
+  },
   "headers": [
     {
       "source": "/(.*)",

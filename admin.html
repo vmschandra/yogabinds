@@ -361,6 +361,34 @@
     var loginError = document.getElementById('loginError');
     var adminLogin = document.getElementById('adminLogin');
     var adminDashboard = document.getElementById('adminDashboard');
+    var submitBtn = loginForm.querySelector('button[type="submit"]');
+
+    // ---- Login attempt lockout ----
+    var MAX_ATTEMPTS = 5;
+    var LOCKOUT_DURATION = 5 * 60 * 1000; // 5 minutes
+    var failedAttempts = parseInt(sessionStorage.getItem('yogabinds_admin_fails') || '0');
+    var lockoutUntil = parseInt(sessionStorage.getItem('yogabinds_admin_lockout') || '0');
+
+    function checkLockout() {
+      if (lockoutUntil && Date.now() < lockoutUntil) {
+        var remaining = Math.ceil((lockoutUntil - Date.now()) / 60000);
+        loginError.textContent = 'Too many failed attempts. Try again in ' + remaining + ' minute' + (remaining > 1 ? 's' : '') + '.';
+        loginError.style.display = 'block';
+        submitBtn.disabled = true;
+        return true;
+      }
+      if (lockoutUntil && Date.now() >= lockoutUntil) {
+        // Lockout expired — reset
+        failedAttempts = 0;
+        sessionStorage.removeItem('yogabinds_admin_fails');
+        sessionStorage.removeItem('yogabinds_admin_lockout');
+        lockoutUntil = 0;
+        submitBtn.disabled = false;
+        loginError.style.display = 'none';
+      }
+      return false;
+    }
+    checkLockout();
 
     // Check session with 30-minute expiration
     var SESSION_TIMEOUT = 30 * 60 * 1000;
@@ -381,21 +409,41 @@
         sessionStorage.removeItem('yogabinds_admin_time');
         location.reload();
       }
+      checkLockout();
     }, 60000);
 
     loginForm.addEventListener('submit', async function(e) {
       e.preventDefault();
-      var user = document.getElementById('adminUser').value;
+      if (checkLockout()) return;
+
+      var user = document.getElementById('adminUser').value.trim();
       var pass = document.getElementById('adminPass').value;
       var userHash = await hashString(user);
       var passHash = await hashString(pass);
 
       if (userHash === ADMIN_USER_HASH && passHash === ADMIN_PASS_HASH) {
+        // Reset failed attempts on success
+        failedAttempts = 0;
+        sessionStorage.removeItem('yogabinds_admin_fails');
+        sessionStorage.removeItem('yogabinds_admin_lockout');
         sessionStorage.setItem('yogabinds_admin', 'true');
         sessionStorage.setItem('yogabinds_admin_time', Date.now().toString());
+        // Clear credentials from DOM
+        document.getElementById('adminUser').value = '';
+        document.getElementById('adminPass').value = '';
         showDashboard();
       } else {
-        loginError.style.display = 'block';
+        failedAttempts++;
+        sessionStorage.setItem('yogabinds_admin_fails', failedAttempts.toString());
+        if (failedAttempts >= MAX_ATTEMPTS) {
+          lockoutUntil = Date.now() + LOCKOUT_DURATION;
+          sessionStorage.setItem('yogabinds_admin_lockout', lockoutUntil.toString());
+          checkLockout();
+        } else {
+          loginError.textContent = 'Invalid credentials. ' + (MAX_ATTEMPTS - failedAttempts) + ' attempt' + (MAX_ATTEMPTS - failedAttempts > 1 ? 's' : '') + ' remaining.';
+          loginError.style.display = 'block';
+        }
+        document.getElementById('adminPass').value = '';
       }
     });
 

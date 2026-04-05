@@ -81,7 +81,7 @@ export async function logoutUser() {
     await signOut(auth);
     return true;
   } catch (error) {
-    console.error("Error signing out:", error);
+    // Error signing out
     return false;
   }
 }
@@ -124,7 +124,7 @@ export async function saveFeedback(name, email, message) {
     });
     return true;
   } catch (error) {
-    console.error("Error saving feedback:", error);
+    // Silent failure — caller handles error
     return false;
   }
 }
@@ -144,7 +144,7 @@ export async function saveBooking(bookingData) {
     });
     return true;
   } catch (error) {
-    console.error("Error saving booking:", error);
+    // Silent failure — caller handles error
     return false;
   }
 }
@@ -156,7 +156,7 @@ export async function getUserBookings(uid) {
     const snapshot = await getDocs(q);
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
-    console.error("Error fetching user bookings:", error);
+    // Silent failure — return empty
     return [];
   }
 }
@@ -167,7 +167,7 @@ export async function cancelBooking(bookingId) {
     await deleteDoc(doc(db, "bookings", bookingId));
     return { success: true };
   } catch (error) {
-    console.error("Error cancelling booking:", error);
+    // Silent failure — caller handles error
     return { success: false, error: error.message };
   }
 }
@@ -192,7 +192,7 @@ export async function saveContact(name, email, message) {
     });
     return true;
   } catch (error) {
-    console.error("Error saving contact:", error);
+    // Silent failure — caller handles error
     return false;
   }
 }
@@ -204,7 +204,7 @@ export async function getBookings() {
     const snapshot = await getDocs(q);
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
-    console.error("Error fetching bookings:", error);
+    // Silent failure — return empty
     return [];
   }
 }
@@ -216,7 +216,7 @@ export async function getFeedback() {
     const snapshot = await getDocs(q);
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
-    console.error("Error fetching feedback:", error);
+    // Silent failure — return empty
     return [];
   }
 }
@@ -239,7 +239,7 @@ export async function getContacts() {
     const snapshot = await getDocs(q);
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
-    console.error("Error fetching contacts:", error);
+    // Silent failure — return empty
     return [];
   }
 }

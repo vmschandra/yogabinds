@@ -1,10 +1,31 @@
 const Stripe = require('stripe');
 
+// ── Simple in-memory rate limiter ──
+var rateMap = {};
+var RATE_WINDOW = 60 * 1000; // 1 minute
+var RATE_LIMIT = 5; // max 5 requests per IP per minute
+
+function isRateLimited(ip) {
+  var now = Date.now();
+  if (!rateMap[ip] || now - rateMap[ip].start > RATE_WINDOW) {
+    rateMap[ip] = { start: now, count: 1 };
+    return false;
+  }
+  rateMap[ip].count++;
+  return rateMap[ip].count > RATE_LIMIT;
+}
+
 module.exports = async function handler(req, res) {
   // Only allow POST
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  // Rate limiting
+  var clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+  if (isRateLimited(clientIp)) {
+    return res.status(429).json({ error: 'Too many requests. Please try again shortly.' });
   }
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);

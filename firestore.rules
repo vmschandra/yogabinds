@@ -1,0 +1,57 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Users collection ──
+    // Users can only read/write their own profile
+    match /users/{userId} {
+      allow read: if request.auth != null && resource.data.uid == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
+      allow update: if request.auth != null && resource.data.uid == request.auth.uid;
+      allow delete: if false;
+    }
+
+    // ── Bookings collection ──
+    // Users can read their own bookings; create allowed for authenticated users
+    // Server (admin SDK) handles updates for refunds/cancellations
+    match /bookings/{bookingId} {
+      allow read: if request.auth != null && resource.data.uid == request.auth.uid;
+      allow create: if request.auth != null;
+      allow update, delete: if false; // Only server-side (admin SDK) can update/delete
+    }
+
+    // ── Invoices collection ──
+    // Only server-side (admin SDK) can read/write invoices
+    match /invoices/{invoiceId} {
+      allow read, write: if false;
+    }
+
+    // ── Invoice counter ──
+    // Only server-side (admin SDK) can access
+    match /counters/{counterId} {
+      allow read, write: if false;
+    }
+
+    // ── Feedback collection ──
+    // Anyone can submit feedback; only authenticated users can read (for admin)
+    match /feedback/{feedbackId} {
+      allow create: if true;
+      allow read: if request.auth != null;
+      allow update, delete: if false;
+    }
+
+    // ── Contacts collection ──
+    // Anyone can submit a contact message; only authenticated users can read (for admin)
+    match /contacts/{contactId} {
+      allow create: if true;
+      allow read: if request.auth != null;
+      allow update, delete: if false;
+    }
+
+    // ── Deny everything else ──
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
