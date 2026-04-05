@@ -6,6 +6,33 @@
 
 import { loginUser, signupUser, logoutUser, onAuthChange, resetPassword, googleSignIn } from './firebase.js';
 
+// ---- Friendly error messages ----
+function friendlyAuthError(firebaseError) {
+  var msg = String(firebaseError || '');
+  if (msg.includes('invalid-credential') || msg.includes('wrong-password') || msg.includes('user-not-found')) {
+    return 'Invalid email or password. Please try again.';
+  }
+  if (msg.includes('email-already-in-use')) {
+    return 'An account with this email already exists. Try signing in.';
+  }
+  if (msg.includes('weak-password')) {
+    return 'Password is too weak. Use at least 8 characters with uppercase, lowercase, and a number.';
+  }
+  if (msg.includes('too-many-requests')) {
+    return 'Too many attempts. Please wait a few minutes and try again.';
+  }
+  if (msg.includes('network-request-failed')) {
+    return 'Network error. Please check your connection and try again.';
+  }
+  if (msg.includes('invalid-email')) {
+    return 'Please enter a valid email address.';
+  }
+  if (msg.includes('popup-closed-by-user')) {
+    return 'Sign-in popup was closed. Please try again.';
+  }
+  return 'Something went wrong. Please try again.';
+}
+
 // ---- Inject Login & Signup Modals ----
 function injectModals() {
   var html = `
@@ -235,7 +262,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     closeLoginModal();
     this.reset();
   } else {
-    errorEl.textContent = result.error;
+    errorEl.textContent = friendlyAuthError(result.error);
   }
   document.getElementById('loginPassword').value = '';
   submitBtn.disabled = false;
@@ -299,7 +326,7 @@ document.getElementById('signupForm').addEventListener('submit', async function(
     closeSignupModal();
     this.reset();
   } else {
-    errorEl.textContent = result.error;
+    errorEl.textContent = friendlyAuthError(result.error);
   }
   document.getElementById('signupPassword').value = '';
   document.getElementById('signupConfirmPassword').value = '';
@@ -323,7 +350,7 @@ document.getElementById('resetForm').addEventListener('submit', async function(e
     successEl.textContent = 'Reset link sent! Check your inbox.';
     this.reset();
   } else {
-    errorEl.textContent = result.error;
+    errorEl.textContent = friendlyAuthError(result.error);
   }
   submitBtn.disabled = false;
   submitBtn.textContent = 'Send Reset Link';
@@ -337,7 +364,7 @@ document.getElementById('googleSignInBtn').addEventListener('click', async funct
   if (result.success) {
     closeLoginModal();
   } else {
-    errorEl.textContent = result.error;
+    errorEl.textContent = friendlyAuthError(result.error);
   }
 });
 
@@ -348,6 +375,6 @@ document.getElementById('googleSignUpBtn').addEventListener('click', async funct
   if (result.success) {
     closeSignupModal();
   } else {
-    errorEl.textContent = result.error;
+    errorEl.textContent = friendlyAuthError(result.error);
   }
 });
