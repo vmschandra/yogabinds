@@ -299,12 +299,14 @@
 
         var data = await response.json();
 
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to create payment session');
+        }
+
         if (data.url && data.url.startsWith('https://checkout.stripe.com/')) {
           window.location.href = data.url;
-        } else if (data.url) {
-          throw new Error('Invalid payment redirect');
         } else {
-          throw new Error(data.error || 'Failed to create payment session');
+          throw new Error('Invalid payment redirect');
         }
       } catch (err) {
         alert('Something went wrong: ' + err.message);

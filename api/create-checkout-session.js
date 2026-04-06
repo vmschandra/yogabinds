@@ -1,4 +1,12 @@
 const Stripe = require('stripe');
+const admin = require('firebase-admin');
+
+// ── Firebase Admin (singleton) ──
+if (!admin.apps.length) {
+  var serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+  admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+}
+var db = admin.firestore();
 
 // ── Simple in-memory rate limiter ──
 var rateMap = {};
@@ -66,6 +74,30 @@ module.exports = async function handler(req, res) {
     for (var i = 0; i < classDates.length; i++) {
       if (!/^\d{4}-\d{2}-\d{2}$/.test(classDates[i]) || isNaN(Date.parse(classDates[i]))) {
         return res.status(400).json({ error: 'Invalid class date format' });
+      }
+    }
+
+    // ── Check for duplicate bookings ──
+    var existingBookings = await db.collection('bookings')
+      .where('email', '==', email)
+      .where('paymentStatus', '==', 'paid')
+      .get();
+
+    if (!existingBookings.empty) {
+      var bookedDates = [];
+      existingBookings.forEach(function(doc) {
+        var booking = doc.data();
+        if (booking.status !== 'cancelled' && booking.classDates) {
+          bookedDates = bookedDates.concat(booking.classDates);
+        }
+      });
+
+      var duplicates = classDates.filter(function(d) { return bookedDates.includes(d); });
+      if (duplicates.length > 0) {
+        var formatted = duplicates.map(function(d) {
+          return new Date(d + 'T00:00:00').toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+        }).join(', ');
+        return res.status(400).json({ error: 'You already have a booking for: ' + formatted + '. Please choose a different date.' });
       }
     }
 
