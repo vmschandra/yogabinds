@@ -158,11 +158,6 @@
     var params = new URLSearchParams(window.location.search);
     var plan = params.get('plan');
 
-    // Validate plan parameter — only 'casual' and 'intro' are valid
-    if (plan !== 'casual' && plan !== 'intro') {
-      plan = 'intro'; // default to intro if missing or invalid
-    }
-
     var titleEl = document.getElementById('planTitle');
     var priceEl = document.getElementById('planPrice');
     var descEl = document.getElementById('planDesc');
