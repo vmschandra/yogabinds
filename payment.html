@@ -215,6 +215,13 @@
       enable: [function(date) { return date.getDay() === 4; }]
     });
 
+    // Reset button if user navigates back from Stripe
+    window.addEventListener('pageshow', function() {
+      var submitBtn = document.getElementById('payBtn');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Proceed to Payment';
+    });
+
     // ---- Payment Handler — Redirect to Stripe ----
     document.getElementById('paymentForm').addEventListener('submit', async function(e) {
       e.preventDefault();
