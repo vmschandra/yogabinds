@@ -1,6 +1,18 @@
 {
-  "rewrites": [
-    { "source": "/((?!maintenance\\.html).*)", "destination": "/maintenance.html" }
+  "redirects": [
+    { "source": "/", "destination": "/maintenance.html", "statusCode": 302 },
+    { "source": "/index.html", "destination": "/maintenance.html", "statusCode": 302 },
+    { "source": "/journey.html", "destination": "/maintenance.html", "statusCode": 302 },
+    { "source": "/contact.html", "destination": "/maintenance.html", "statusCode": 302 },
+    { "source": "/payment.html", "destination": "/maintenance.html", "statusCode": 302 },
+    { "source": "/payment-success.html", "destination": "/maintenance.html", "statusCode": 302 },
+    { "source": "/my-bookings.html", "destination": "/maintenance.html", "statusCode": 302 },
+    { "source": "/faqs.html", "destination": "/maintenance.html", "statusCode": 302 },
+    { "source": "/terms.html", "destination": "/maintenance.html", "statusCode": 302 },
+    { "source": "/privacy-policy.html", "destination": "/maintenance.html", "statusCode": 302 },
+    { "source": "/refund-policy.html", "destination": "/maintenance.html", "statusCode": 302 },
+    { "source": "/landing.html", "destination": "/maintenance.html", "statusCode": 302 },
+    { "source": "/admin.html", "destination": "/maintenance.html", "statusCode": 302 }
   ],
   "functions": {
     "api/create-checkout-session.js": {
